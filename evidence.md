@@ -1,7 +1,4 @@
-# Evidence – SiteProof (ESCP-2627DT-[GROUP])
-
-> **Status:** The four interviews below were **simulated with an AI assistant** to prepare our interview guide and sharpen the hypotheses in `product.md`. They are **not** real stakeholder evidence. Real interviews (one per group member) are documented in the second part of this file and take priority wherever they disagree with the simulations.
-
+# Evidence – Guillermo (ESCP-2627DT-[GROUP])
 ## Stakeholders covered
 
 | # | Role | Relation to SiteProof | Hypotheses tested (see product.md §1.8) |

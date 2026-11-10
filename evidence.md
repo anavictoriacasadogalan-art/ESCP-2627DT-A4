@@ -124,3 +124,34 @@ Probably per active project, or maybe a small monthly fee for the whole company.
 **6. Who decides whether to buy it?**
 
 Ultimately, I make the decision. But if my site managers don’t see the value in it or don’t want to use it, I’m not going to buy it.
+
+S6 – Site supervisor / finishing works coordinator
+Persona: Site supervisor, ~34, works for a regional contractor and coordinates finishing trades on smaller apartment projects.
+
+1. How do you currently assign and follow up on defects?
+
+I take photos during inspections and send them to the relevant foreman, usually through WhatsApp. I keep a running list in my phone and try to check items again during the next site visit.
+
+2. What causes the most wasted time?
+
+Unclear locations and incomplete descriptions. If a photo does not show the apartment number or room, I often have to call several people to find out where the issue is.
+
+3. How often do subcontractors confirm that work is complete?
+
+Most confirm by message. Some send a photo, but usually only when I specifically ask for one.
+
+4. What happens when an item is marked complete but is still wrong?
+
+I reopen it and contact the trade again. This is frustrating because there is rarely a clear record of what was originally requested or who confirmed the repair.
+
+5. Would subcontractors use a link-based tool?
+
+Probably. They would be more likely to use a link than download an app, especially if they can open the task directly and upload one photo without creating an account.
+
+6. What would you want the tool to do?
+
+Create a defect in less than a minute, automatically record the location and date, notify the responsible trade, and let me mark the repair as verified separately from the trade’s completion confirmation.
+
+7. What would make you continue using it after a pilot?
+
+It would need to reduce phone calls and make handover preparation easier. If it became another list that I had to maintain manually, I would stop using it.

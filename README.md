@@ -23,7 +23,7 @@ The responsible person uses the worker/contractor experience; there is no separa
 
 | Document | Purpose |
 |---|---|
-| Supplied `product (3).md` | Product scope, reporting fields, requirements FR-01–FR-09, statuses, and acceptance scenario |
+| Supplied `product.md` | Product scope, reporting fields, requirements FR-01–FR-09, statuses, and acceptance scenario |
 | `evidence.md` | Markdown transcription of the supplied evidence PDF, preserving its wording; research provenance needs confirmation |
 | `design.md` | Proposed interface, design tokens, screens, component states, and Storybook plan |
 | Existing `architecture.md` | Separately added technical document, preserved unchanged; see the consistency note below |
@@ -48,9 +48,9 @@ The newly supplied evidence PDF includes four stakeholder accounts that closely 
 - Defect history and filters by site, status, assignee, and deadline, including overdue items.
 - No external APIs and no real project data, as required by the workshop.
 
-Statuses are **New → Assigned → In progress → Resolved → Closed**. Resolved means submitted for manager review; Closed means reviewed and verified. Requests for further work return the defect to In progress with a recorded reason.
+Statuses are **Reported → Assigned → In progress → Ready for review → Resolved**. Resolved means submitted for manager review; Closed means reviewed and verified. Requests for further work return the defect to In progress with a recorded reason.
 
-The documentation draft proposed React, TypeScript, Vite, CSS, Storybook, and browser-local IndexedDB storage. These choices await reconciliation with the existing architecture.md, which uses SiteProof naming, a different product handoff, and localStorage. The architecture file is preserved unchanged in this publication; do not treat these documents as a reconciled build specification yet. Real sign-in, production authorization, cross-device sharing, notifications, BIM integration, and full offline synchronization are outside this prototype.
+The documentation draft proposed React, TypeScript, Vite, CSS, Storybook, and browser-local localStorage. These choices await reconciliation with the existing architecture.md, which uses SiteProof naming, a different product handoff, and localStorage. The architecture file is preserved unchanged in this publication; do not treat these documents as a reconciled build specification yet. Real sign-in, production authorization, cross-device sharing, notifications, BIM integration, and full offline synchronization are outside this prototype.
 
 ## 6. Planned demonstration
 

@@ -4,7 +4,8 @@
 > **Version:** 1.0  
 > **Document purpose:** Define what the product does, who it serves, and what the first usable version must deliver.
 
-## 1. Product Overview
+## 1. Strategy
+Product Overview
 
 A mobile-friendly digital platform that helps construction teams **report, assign, track, and resolve defects on site**.
 
@@ -46,7 +47,8 @@ These problems and benefits are **product hypotheses** to validate with construc
 
 Steps **1–5** are based directly on the described concept. Steps **6–7** are proposed MVP completion steps so that defects can be tracked through resolution.
 
-## 5. MVP Functional Requirements
+## 5. Scope
+MVP Functional Requirements
 
 | ID | Requirement | Acceptance criteria |
 | --- | --- | --- |
@@ -62,7 +64,8 @@ Steps **1–5** are based directly on the described concept. Steps **6–7** are
 
 **Priority:** All requirements above define the proposed MVP. Notification delivery beyond visibility in the dashboard is an enhancement unless agreed otherwise.
 
-## 6. Key Product Screens
+## 6. Structure
+Key Product Screens
 
 **Worker experience**
 - **My defects:** Reports submitted by the worker and their current status.
@@ -85,7 +88,8 @@ Steps **1–5** are based directly on the described concept. Steps **6–7** are
 
 A suspected cause should be clearly distinguished from a **confirmed cause** so the platform does not present a worker's initial assessment as verified fact.
 
-## 8. End-to-End MVP Acceptance Test
+## 8. Skeleton
+End-to-End MVP Acceptance Test
 
 The first version is usable when the following scenario works end-to-end:
 

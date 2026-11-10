@@ -11,7 +11,7 @@
 | **Source of product truth** | `architecture_handoff.md`, which summarises `product.md` v5.0 (see [§1.3](#13-sources-and-how-they-were-reconciled)) |
 | **Audience** | Project team, course reviewers, and AI coding agents building the prototype |
 
-> **In one sentence:** SiteProof is a single-page web app that runs only in the browser. It keeps one shared issue record per problem in the browser's `localStorage`, and lets you switch between fictional Field and Manager users in the same browser to demonstrate the hand-off: **report → assign → progress → review**.
+> **In one sentence:** Guillermo is a single-page web app that runs only in the browser. It keeps one shared issue record per problem in the browser's `localStorage`, and lets you switch between fictional Field and Manager users in the same browser to demonstrate the hand-off: **report → assign → progress → review**.
 
 ---
 

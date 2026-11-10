@@ -41,7 +41,7 @@
 
 ### 1.1 What this document is for
 
-This document explains **how** SiteProof is built. It does not cover **what** SiteProof is (that is `product.md`) or how it looks (that is `design.md`). It is written so that a team member or an AI coding agent can build the prototype from it without having to make further architectural decisions. Every major choice comes with **why we chose it** and **why we did not choose the obvious alternatives**.
+This document explains **how** Guillermo is built. It does not cover **what** Guillermo is (that is `product.md`) or how it looks (that is `design.md`). It is written so that a team member or an AI coding agent can build the prototype from it without having to make further architectural decisions. Every major choice comes with **why we chose it** and **why we did not choose the obvious alternatives**.
 
 ### 1.2 Constraints the architecture must respect
 

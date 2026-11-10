@@ -1,8 +1,8 @@
-# SiteProof — Architecture
+# Guillermo — Architecture
 
 | | |
 |---|---|
-| **Product** | SiteProof: construction-site issue communication web app |
+| **Product** | Guillermo: construction-site issue communication web app |
 | **Course** | ESCP Digital Product Design, 2026–2027 |
 | **Repository** | `ESCP-2627DT-A4` |
 | **Prepared for** | Guillermo |

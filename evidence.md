@@ -125,9 +125,41 @@ Probably per active project, or maybe a small monthly fee for the whole company.
 
 Ultimately, I make the decision. But if my site managers don’t see the value in it or don’t want to use it, I’m not going to buy it.
 
-S6 – Site supervisor / finishing works coordinator
-Persona: Site supervisor, ~34, works for a regional contractor and coordinates finishing trades on smaller apartment projects.
 
+**S5 – Client representative / housing association project lead
+Persona: Client-side project lead, ~42, responsible for several apartment refurbishment projects.**
+
+1. How do you receive information about defects and completion?
+
+Usually through progress meetings, email updates, and reports from the general contractor. The level of detail varies a lot between projects.
+
+2. What concerns you most about defect management?
+
+I want confidence that reported issues are actually resolved before the handover. Sometimes a report says an item is complete, but we discover during our inspection that the problem remains.
+
+3. Have delays caused problems for you?
+
+Yes. On one project, several unresolved defects delayed tenant move-in by almost three weeks. This created complaints from tenants and additional coordination work for our team.
+
+4. What evidence would you expect when a defect is closed?
+
+A clear before-and-after photo, the apartment or room location, the date of completion, and confirmation from the person responsible. For important items, I would also want an inspection record.
+
+5. Would you rely on a “verified” status in a digital tool?
+
+Yes, if it clearly showed who verified the item and when. However, I would not want the tool to be confused with formal client acceptance or contractual handover documentation.
+
+6. What would make a tool useful to you?
+
+A dashboard showing open, overdue, and repeatedly reopened defects across projects. I would also value a simple export that could be attached to handover documentation.
+
+7. What would make you reject it?
+
+If information is incomplete, if subcontractors do not use it, or if it creates another reporting process without improving accountability.
+
+****S6 – Site supervisor / finishing works coordinator
+Persona: Site supervisor, ~34, works for a regional contractor and coordinates finishing trades on smaller apartment projects.
+****
 1. How do you currently assign and follow up on defects?
 
 I take photos during inspections and send them to the relevant foreman, usually through WhatsApp. I keep a running list in my phone and try to check items again during the next site visit.

@@ -1,0 +1,2234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SiteProof</title>
+  <meta name="claude:viewport-fit-sides" content="cover">
+  <meta name="description" content="SiteProof: construction-site issue reporting and follow-up (course prototype, fictional data).">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+  <style>
+/* SiteProof — styles
+ * Layout: field screens are one phone-width column (max 560px);
+ * manager screens are a wide desk layout (max 1200px) that stacks on phones.
+ * Look: graphite site-signage bands with a safety-yellow accent.
+ */
+:root {
+  --bg: #ECEEEF;
+  --surface: #FFFFFF;
+  --surface-2: #F4F5F6;
+  --ink: #15181B;
+  --ink-2: #4F575F;
+  --ink-3: #78818A;
+  --line: #D5DADE;
+  --band: #23282C;
+  --band-2: #2E3439;
+  --band-ink: #F2F3F4;
+  --band-ink-2: #A8B0B7;
+  --accent: #F5B800;
+  --accent-ink: #191919;
+  --accent-soft: #FFF3C7;
+  --stripe-dark: #1B1D1F;
+  --focus: #1F5FD6;
+
+  --st-reported: #1F5FD6;   --st-reported-bg: #E4ECFC;
+  --st-assigned: #4F5A66;   --st-assigned-bg: #E6E9EC;
+  --st-in_progress: #A85A06; --st-in_progress-bg: #FCEBD3;
+  --st-review: #6B3FD0;     --st-review-bg: #EDE6FC;
+  --st-rework: #BD3F0F;     --st-rework-bg: #FCE3D7;
+  --st-closed: #13773D;     --st-closed-bg: #DDF2E4;
+  --danger: #C42B2B;        --danger-bg: #FCE3E3;
+  --ok: #13773D;
+
+  --shadow: 0 1px 2px rgba(20, 24, 28, .06), 0 6px 18px rgba(20, 24, 28, .07);
+  --f-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: "Barlow", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --r: 10px;
+  --r-sm: 7px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111416; --surface: #1A1E21; --surface-2: #22272B; --ink: #E8EBED; --ink-2: #AAB3BA; --ink-3: #828C94; --line: #323A40;
+    --band: #0B0D0F; --band-2: #181C1F; --band-ink: #EEF0F1; --band-ink-2: #9AA3AA;
+    --accent: #F7C21E; --accent-ink: #171717; --accent-soft: #3A3012; --stripe-dark: #0B0D0F; --focus: #7FA8F5;
+    --st-reported: #8DB2F7; --st-reported-bg: #1C2A44;
+    --st-assigned: #B6C0C9; --st-assigned-bg: #2A3036;
+    --st-in_progress: #F2B15B; --st-in_progress-bg: #3A2A14;
+    --st-review: #BBA2F7; --st-review-bg: #2D2346;
+    --st-rework: #F59A71; --st-rework-bg: #42251A;
+    --st-closed: #74D39B; --st-closed-bg: #173323;
+    --danger: #F28B8B; --danger-bg: #431E1E; --ok: #74D39B;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 18px rgba(0, 0, 0, .25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111416; --surface: #1A1E21; --surface-2: #22272B; --ink: #E8EBED; --ink-2: #AAB3BA; --ink-3: #828C94; --line: #323A40;
+  --band: #0B0D0F; --band-2: #181C1F; --band-ink: #EEF0F1; --band-ink-2: #9AA3AA;
+  --accent: #F7C21E; --accent-ink: #171717; --accent-soft: #3A3012; --stripe-dark: #0B0D0F; --focus: #7FA8F5;
+  --st-reported: #8DB2F7; --st-reported-bg: #1C2A44;
+  --st-assigned: #B6C0C9; --st-assigned-bg: #2A3036;
+  --st-in_progress: #F2B15B; --st-in_progress-bg: #3A2A14;
+  --st-review: #BBA2F7; --st-review-bg: #2D2346;
+  --st-rework: #F59A71; --st-rework-bg: #42251A;
+  --st-closed: #74D39B; --st-closed-bg: #173323;
+  --danger: #F28B8B; --danger-bg: #431E1E; --ok: #74D39B;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 18px rgba(0, 0, 0, .25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100%;
+}
+img { max-width: 100%; display: block; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 700; letter-spacing: .01em; margin: 0; text-wrap: balance; line-height: 1.1; }
+p { margin: 0; }
+.mono { font-family: var(--f-mono); font-weight: 500; font-size: .82em; letter-spacing: .01em; }
+.muted { color: var(--ink-2); }
+.faint { color: var(--ink-3); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.icon { width: 1.15em; height: 1.15em; flex: none; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: -0.18em; }
+
+/* ---------- page frame ---------- */
+.wrap {
+  width: 100%;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.narrow { max-width: 592px; }
+.wide { max-width: 1232px; }
+.page { padding-block: 20px 48px; display: flex; flex-direction: column; gap: 22px; }
+
+.band { background: var(--band); color: var(--band-ink); }
+.band-in { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 12px; }
+.stripe { height: 6px; background: repeating-linear-gradient(135deg, var(--accent) 0 12px, var(--stripe-dark) 12px 24px); }
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.brand-mark { width: 30px; height: 30px; border-radius: 6px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; flex: none; }
+.brand-mark svg { width: 18px; height: 18px; stroke-width: 2.4; }
+.brand-name { font-family: var(--f-display); font-weight: 700; font-size: 1.35rem; letter-spacing: .03em; text-transform: uppercase; line-height: 1; }
+.brand-sub { font-size: .78rem; color: var(--band-ink-2); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand-text { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.demo-tag { font-family: var(--f-display); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; background: var(--band-2); color: var(--accent); border-radius: 4px; padding: 2px 7px; white-space: nowrap; }
+.band-right { display: flex; align-items: center; gap: 10px; }
+
+.userbtn { display: flex; align-items: center; gap: 10px; background: transparent; border: 1px solid transparent; color: inherit; padding: 4px 6px 4px 4px; border-radius: 999px; }
+.userbtn:hover { background: var(--band-2); }
+.userbtn .who { text-align: left; line-height: 1.15; }
+.userbtn .who b { display: block; font-weight: 600; font-size: .92rem; }
+.userbtn .who span { font-size: .76rem; color: var(--band-ink-2); }
+.avatar { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: .8rem; letter-spacing: .02em; flex: none; }
+.avatar.sm { width: 26px; height: 26px; font-size: .68rem; }
+.avatar.lg { width: 44px; height: 44px; font-size: .95rem; }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 46px; padding: 0 18px; border-radius: var(--r-sm);
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  font-weight: 600; font-size: .98rem; text-decoration: none; white-space: nowrap;
+  transition: background .15s, border-color .15s, transform .05s;
+}
+.btn:hover { border-color: var(--ink-3); }
+.btn:active { transform: translateY(1px); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { filter: brightness(1.04); border-color: var(--accent); }
+.btn.dark { background: var(--ink); border-color: var(--ink); color: var(--surface); }
+.btn.danger { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+.btn.ghost { background: transparent; border-color: transparent; color: var(--ink-2); }
+.btn.ghost:hover { background: var(--surface-2); }
+.btn.block { width: 100%; }
+.btn.sm { min-height: 36px; padding: 0 12px; font-size: .9rem; }
+.btn[disabled] { opacity: .5; cursor: not-allowed; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-row > .btn { flex: 1 1 auto; }
+
+.back { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); background: none; border: 0; padding: 6px 0; font-weight: 600; }
+.back:hover { color: var(--ink); }
+
+/* ---------- badges & chips ---------- */
+.badge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--f-display); font-weight: 700; font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; padding: 3px 9px 2px; border-radius: 4px; white-space: nowrap; }
+.badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.st-reported { color: var(--st-reported); background: var(--st-reported-bg); }
+.st-assigned { color: var(--st-assigned); background: var(--st-assigned-bg); }
+.st-in_progress { color: var(--st-in_progress); background: var(--st-in_progress-bg); }
+.st-review { color: var(--st-review); background: var(--st-review-bg); }
+.st-rework { color: var(--st-rework); background: var(--st-rework-bg); }
+.st-closed { color: var(--st-closed); background: var(--st-closed-bg); }
+.badge.overdue { color: var(--danger); background: var(--danger-bg); }
+.badge.hazard { color: var(--accent-ink); background: var(--accent); }
+.badge.hazard::before { display: none; }
+.chip { display: inline-flex; align-items: center; gap: 5px; font-size: .82rem; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line); white-space: nowrap; }
+.chip.req { background: var(--accent-soft); color: var(--ink); border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+.prio { font-weight: 700; font-size: .82rem; }
+.prio-urgent { color: var(--danger); }
+.prio-high { color: var(--st-in_progress); }
+.prio-normal, .prio-low { color: var(--ink-2); }
+
+.due { display: inline-flex; align-items: center; gap: 5px; font-weight: 600; font-size: .9rem; color: var(--ink-2); white-space: nowrap; }
+.due.today { color: var(--st-in_progress); }
+.due.late { color: var(--danger); }
+
+/* ---------- cards & sections ---------- */
+.section { display: flex; flex-direction: column; gap: 10px; }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.section-head h2 { font-size: 1.05rem; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-2); }
+.count { font-family: var(--f-mono); font-size: .8rem; color: var(--ink-3); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+.panel-pad { padding: 18px; }
+.empty { padding: 18px; border: 1px dashed var(--line); border-radius: var(--r); color: var(--ink-2); font-size: .95rem; text-align: center; }
+
+/* ---------- worker dashboard ---------- */
+.hello h1 { font-size: 1.9rem; }
+.hello p { color: var(--ink-2); margin-top: 4px; }
+.report-cta {
+  display: flex; align-items: center; gap: 16px; width: 100%;
+  background: var(--accent); color: var(--accent-ink); border: 0; border-radius: var(--r);
+  padding: 18px; text-align: left; box-shadow: var(--shadow);
+}
+.report-cta:hover { filter: brightness(1.04); }
+.report-cta .cam { width: 58px; height: 58px; border-radius: 12px; background: var(--accent-ink); color: var(--accent); display: grid; place-items: center; flex: none; }
+.report-cta .cam svg { width: 30px; height: 30px; }
+.report-cta b { display: block; font-family: var(--f-display); font-size: 1.5rem; text-transform: uppercase; letter-spacing: .03em; line-height: 1.05; }
+.report-cta span { font-size: .92rem; opacity: .8; }
+.report-cta .chev { margin-left: auto; width: 24px; height: 24px; }
+
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 12px; }
+.stat b { display: block; font-family: var(--f-display); font-size: 1.7rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.stat span { font-size: .8rem; color: var(--ink-2); }
+.stat.alert b { color: var(--danger); }
+
+.task-list { display: flex; flex-direction: column; gap: 10px; }
+.task {
+  position: relative; display: flex; flex-direction: column; gap: 6px; width: 100%;
+  text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r);
+  padding: 14px 16px 14px 18px; overflow: hidden;
+}
+.task:hover { border-color: var(--ink-3); }
+.task::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--line); }
+.task.s-in_progress::before { background: var(--st-in_progress); }
+.task.s-assigned::before { background: var(--st-assigned); }
+.task.s-rework::before { background: var(--st-rework); }
+.task.s-review::before { background: var(--st-review); }
+.task.s-closed::before { background: var(--st-closed); }
+.task.s-reported::before { background: var(--st-reported); }
+.task.is-late::before { background: var(--danger); }
+.task.is-hazard::before { background: repeating-linear-gradient(180deg, var(--accent) 0 8px, var(--stripe-dark) 8px 16px); }
+.task-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.task-title { font-weight: 700; font-size: 1.08rem; line-height: 1.25; }
+.loc { display: inline-flex; align-items: center; gap: 5px; color: var(--ink-2); font-size: .92rem; }
+.task-foot { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; margin-top: 2px; }
+.new-dot { font-size: .72rem; font-weight: 700; color: var(--accent-ink); background: var(--accent); border-radius: 3px; padding: 1px 6px; text-transform: uppercase; letter-spacing: .05em; }
+
+.report-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+.report-row + .report-row { border-top: 1px solid var(--line); }
+.report-row .thumb { width: 52px; height: 40px; border-radius: 5px; object-fit: cover; flex: none; background: var(--surface-2); }
+.report-row .body { min-width: 0; flex: 1; }
+.report-row .body b { display: block; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.report-row .body span { font-size: .85rem; color: var(--ink-2); }
+
+/* ---------- forms ---------- */
+.form { display: flex; flex-direction: column; gap: 16px; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field > label, .label { font-weight: 600; font-size: .92rem; }
+.field .hint { font-size: .82rem; color: var(--ink-3); }
+.opt { font-weight: 400; color: var(--ink-3); }
+input[type="text"], input[type="password"], input[type="date"], input[type="datetime-local"], input[type="number"], select, textarea {
+  width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r-sm);
+  background: var(--surface); color: var(--ink);
+}
+textarea { min-height: 92px; resize: vertical; line-height: 1.4; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 25%, transparent); }
+input[disabled] { opacity: .5; }
+.row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+.check { display: flex; align-items: center; gap: 9px; font-size: .94rem; cursor: pointer; }
+.check input { width: 20px; height: 20px; accent-color: var(--ink); flex: none; }
+.hazard-check { border: 2px solid var(--accent); background: var(--accent-soft); border-radius: var(--r-sm); padding: 12px; font-weight: 600; }
+.form-error { color: var(--danger); background: var(--danger-bg); border-radius: var(--r-sm); padding: 10px 12px; font-weight: 600; font-size: .92rem; }
+.form-error:empty { display: none; }
+.form-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+.form-card h2 { font-size: 1.2rem; }
+
+.seg { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); border-radius: var(--r-sm); overflow: hidden; }
+.seg label { position: relative; text-align: center; padding: 9px 4px; font-weight: 600; font-size: .88rem; cursor: pointer; border-left: 1px solid var(--line); background: var(--surface); }
+.seg label:first-child { border-left: 0; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label:has(input:checked) { background: var(--ink); color: var(--surface); }
+.seg label:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: -3px; }
+
+.photo-field { border: 2px dashed var(--line); border-radius: var(--r); background: var(--surface); overflow: hidden; }
+.photo-pick { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 26px 16px; cursor: pointer; text-align: center; }
+.photo-pick .cam { width: 64px; height: 64px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; }
+.photo-pick .cam svg { width: 30px; height: 30px; }
+.photo-pick b { font-size: 1.05rem; }
+.photo-pick span { font-size: .85rem; color: var(--ink-3); }
+.photo-field input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.photo-field:focus-within { border-color: var(--focus); }
+.photo-preview img { width: 100%; max-height: 360px; object-fit: cover; }
+.photo-preview .btn-row { padding: 10px; }
+
+/* ---------- detail ---------- */
+.detail-photo { border-radius: var(--r); overflow: hidden; background: var(--surface-2); aspect-ratio: 4 / 3; max-width: 100%; }
+.detail-photo img { width: 100%; height: 100%; object-fit: cover; }
+.no-photo { display: grid; place-items: center; gap: 6px; color: var(--ink-3); height: 100%; font-size: .9rem; }
+.title-block { display: flex; flex-direction: column; gap: 8px; }
+.title-block h1 { font-size: 1.9rem; }
+.badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.instructions { background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent); border-left: 5px solid var(--accent); border-radius: var(--r-sm); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.instructions .from { font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2); }
+.instructions p { font-size: 1.04rem; }
+.callout { border-radius: var(--r-sm); padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; font-size: .95rem; }
+.callout .icon { margin-top: 2px; }
+.callout.rework { background: var(--st-rework-bg); color: var(--ink); border-left: 4px solid var(--st-rework); }
+.callout.review { background: var(--st-review-bg); border-left: 4px solid var(--st-review); }
+.callout.closed { background: var(--st-closed-bg); border-left: 4px solid var(--st-closed); }
+.callout.late { background: var(--danger-bg); border-left: 4px solid var(--danger); }
+.callout.info { background: var(--surface-2); border-left: 4px solid var(--ink-3); }
+
+.facts { display: grid; grid-template-columns: max-content 1fr; gap: 10px 16px; margin: 0; font-size: .95rem; }
+.facts dt { color: var(--ink-3); font-weight: 600; font-size: .84rem; text-transform: uppercase; letter-spacing: .05em; padding-top: 2px; }
+.facts dd { margin: 0; min-width: 0; }
+.person { display: inline-flex; align-items: center; gap: 8px; }
+.team { display: flex; flex-direction: column; gap: 8px; }
+
+.req { border: 1px solid var(--line); border-radius: var(--r-sm); padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; background: var(--surface); }
+.req.pending { border-color: color-mix(in srgb, var(--accent) 70%, var(--line)); background: var(--accent-soft); }
+.req-head { display: flex; justify-content: space-between; gap: 8px; align-items: center; flex-wrap: wrap; }
+.req-head b { font-weight: 700; }
+.req-state { font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+.req-state.pending { color: var(--st-in_progress); }
+.req-state.approved { color: var(--ok); }
+.req-state.declined, .req-state.withdrawn { color: var(--ink-3); }
+.quote { border-left: 3px solid var(--line); padding-left: 10px; color: var(--ink-2); font-size: .94rem; }
+
+.timeline { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.timeline li { position: relative; padding: 0 0 16px 26px; }
+.timeline li::before { content: ""; position: absolute; left: 6px; top: 8px; bottom: -8px; width: 2px; background: var(--line); }
+.timeline li:last-child::before { display: none; }
+.timeline .dot { position: absolute; left: 0; top: 4px; width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--surface); background: var(--ink-3); box-shadow: 0 0 0 1px var(--line); }
+.timeline .t-reported .dot { background: var(--st-reported); }
+.timeline .t-assigned .dot, .timeline .t-updated .dot { background: var(--st-assigned); }
+.timeline .t-started .dot, .timeline .t-note .dot { background: var(--st-in_progress); }
+.timeline .t-review .dot { background: var(--st-review); }
+.timeline .t-returned .dot { background: var(--st-rework); }
+.timeline .t-closed .dot, .timeline .t-request_approved .dot { background: var(--st-closed); }
+.timeline .t-request .dot { background: var(--accent); }
+.timeline .t-request_declined .dot { background: var(--ink-3); }
+.timeline .what { font-weight: 600; font-size: .95rem; }
+.timeline .meta { font-size: .82rem; color: var(--ink-3); }
+.timeline .quote { margin-top: 4px; }
+
+.action-bar {
+  position: sticky; bottom: 0; z-index: 5;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+}
+.action-bar .inner { display: flex; flex-direction: column; gap: 8px; }
+.action-bar .minor { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.action-bar .minor .btn { padding: 0 8px; font-size: .88rem; white-space: normal; line-height: 1.15; min-height: 50px; }
+
+/* ---------- confirmation ---------- */
+.sent { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 30px 18px; }
+.sent .tick { width: 72px; height: 72px; border-radius: 50%; background: var(--st-closed-bg); color: var(--ok); display: grid; place-items: center; }
+.sent .tick svg { width: 38px; height: 38px; stroke-width: 2.6; }
+.sent h1 { font-size: 2rem; }
+.ticket { font-family: var(--f-mono); font-size: 1.3rem; background: var(--surface); border: 1px solid var(--line); padding: 8px 16px; border-radius: var(--r-sm); }
+
+/* ---------- login ---------- */
+.login { min-height: 100vh; min-height: 100dvh; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); }
+.login-brand { background: var(--band); color: var(--band-ink); position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 32px; padding-block: 40px; padding-left: max(32px, env(safe-area-inset-left, 0px)); padding-right: 32px; overflow: hidden; }
+.login-brand::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 14px; background: repeating-linear-gradient(135deg, var(--accent) 0 16px, var(--stripe-dark) 16px 32px); }
+.login-brand h1 { font-size: clamp(2.4rem, 5vw, 3.8rem); text-transform: uppercase; letter-spacing: .01em; line-height: .95; }
+.login-brand h1 em { font-style: normal; color: var(--accent); }
+.login-brand .lead { color: var(--band-ink-2); font-size: 1.08rem; max-width: 34ch; margin-top: 14px; }
+.flow { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; max-width: 380px; }
+.flow li { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: center; color: var(--band-ink); font-size: .95rem; }
+.flow .n { width: 34px; height: 34px; border-radius: 6px; background: var(--band-2); color: var(--accent); display: grid; place-items: center; font-family: var(--f-mono); font-size: .85rem; }
+.site-plate { font-family: var(--f-mono); font-size: .78rem; color: var(--band-ink-2); border: 1px solid var(--band-2); border-radius: 6px; padding: 10px 12px; display: inline-flex; flex-direction: column; gap: 2px; align-self: flex-start; margin-bottom: 18px; }
+.site-plate b { color: var(--band-ink); font-weight: 500; }
+.login-main { display: flex; align-items: center; justify-content: center; padding-block: 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.login-card { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 20px; }
+.login-card h2 { font-size: 2rem; }
+.role-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.role-btn { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 14px; border-radius: var(--r); border: 2px solid var(--line); background: var(--surface); text-align: left; }
+.role-btn svg { width: 26px; height: 26px; }
+.role-btn b { font-family: var(--f-display); font-size: 1.25rem; text-transform: uppercase; letter-spacing: .04em; line-height: 1; }
+.role-btn span { font-size: .82rem; color: var(--ink-2); }
+.role-btn[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.role-btn[aria-pressed="true"] svg { color: var(--st-in_progress); }
+.demo-accounts { display: flex; flex-direction: column; gap: 8px; }
+.demo-accounts .label { font-size: .8rem; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-3); }
+.acct-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; }
+.acct { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: var(--r-sm); border: 1px solid var(--line); background: var(--surface); text-align: left; min-width: 0; }
+.acct:hover, .acct.sel { border-color: var(--ink); }
+.acct .t { min-width: 0; line-height: 1.15; }
+.acct b { display: block; font-size: .9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.acct .t span { font-size: .76rem; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.demo-note { font-size: .84rem; color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 14px; }
+
+/* ---------- manager ---------- */
+.mgr-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.mgr-head h1 { font-size: 2.1rem; }
+.mgr-head p { color: var(--ink-2); }
+.kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.kpi { text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; position: relative; overflow: hidden; }
+.kpi:hover { border-color: var(--ink-3); }
+.kpi[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.kpi b { font-family: var(--f-display); font-size: 2.4rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.kpi span { font-size: .86rem; color: var(--ink-2); font-weight: 600; }
+.kpi::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--k, var(--line)); }
+.kpi.k-new { --k: var(--st-reported); }
+.kpi.k-active { --k: var(--st-in_progress); }
+.kpi.k-review { --k: var(--st-review); }
+.kpi.k-late { --k: var(--danger); }
+.kpi.k-late b { color: var(--danger); }
+.kpi.k-req { --k: var(--accent); }
+
+.mgr-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.todo { display: flex; flex-direction: column; }
+.todo-item { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 16px; background: none; border: 0; text-align: left; width: 100%; color: inherit; }
+.todo-item + .todo-item { border-top: 1px solid var(--line); }
+.todo-item:hover { background: var(--surface-2); }
+.todo-ico { width: 36px; height: 36px; border-radius: 8px; display: grid; place-items: center; }
+.todo-ico.i-new { background: var(--st-reported-bg); color: var(--st-reported); }
+.todo-ico.i-review { background: var(--st-review-bg); color: var(--st-review); }
+.todo-ico.i-req { background: var(--accent-soft); color: var(--ink); }
+.todo-ico.i-late { background: var(--danger-bg); color: var(--danger); }
+.todo-item .txt { min-width: 0; }
+.todo-item .txt b { display: block; font-weight: 600; font-size: .96rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.todo-item .txt span { display: block; font-size: .84rem; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.todo-item .when { font-size: .8rem; color: var(--ink-3); white-space: nowrap; }
+
+.crew { display: flex; flex-direction: column; }
+.crew-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 16px; }
+.crew-row + .crew-row { border-top: 1px solid var(--line); }
+.crew-row .nm b { display: block; font-weight: 600; font-size: .94rem; }
+.crew-row .nm span { font-size: .8rem; color: var(--ink-3); }
+.crew-row .load { display: flex; gap: 6px; align-items: center; font-size: .82rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.crew-row .load .late { color: var(--danger); font-weight: 700; }
+
+.toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+.tab { border: 1px solid transparent; background: none; padding: 7px 12px; border-radius: 999px; font-weight: 600; font-size: .9rem; color: var(--ink-2); }
+.tab:hover { background: var(--surface); }
+.tab[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+.tab .n { font-family: var(--f-mono); font-size: .76rem; opacity: .75; margin-left: 4px; }
+.search { position: relative; flex: 0 1 280px; min-width: 180px; }
+.search .icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ink-3); }
+.search input { padding-left: 36px; min-height: 40px; }
+
+.table { overflow-x: auto; }
+.trow { display: grid; grid-template-columns: 76px 64px minmax(200px, 1fr) 140px 150px 140px 170px; gap: 12px; align-items: center; padding: 10px 16px; min-width: 900px; background: none; border: 0; width: 100%; text-align: left; color: inherit; }
+.trow.head { font-size: .76rem; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-3); font-weight: 700; padding-block: 10px; border-bottom: 1px solid var(--line); }
+button.trow { border-top: 1px solid var(--line); }
+button.trow:first-of-type { border-top: 0; }
+button.trow:hover { background: var(--surface-2); }
+.trow .thumb { width: 64px; height: 46px; border-radius: 5px; object-fit: cover; background: var(--surface-2); }
+.trow .ttl b { display: block; font-weight: 600; }
+.trow .ttl span { font-size: .84rem; color: var(--ink-2); }
+.trow .cell { font-size: .9rem; min-width: 0; }
+.trow .c-st { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+.trow .cell.small { font-size: .84rem; color: var(--ink-2); }
+
+.detail-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.stack { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.side { position: sticky; top: 16px; }
+.subhead { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); font-weight: 700; font-family: var(--f-body); }
+.report-text { font-size: 1.04rem; }
+.kv { display: flex; flex-direction: column; gap: 3px; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+details.adjust summary { cursor: pointer; font-weight: 600; padding: 4px 0; list-style: none; display: flex; align-items: center; gap: 6px; }
+details.adjust summary::-webkit-details-marker { display: none; }
+details.adjust[open] summary .icon { transform: rotate(90deg); }
+details.adjust summary .icon { transition: transform .15s; }
+.worker-opt { display: flex; flex-direction: column; gap: 6px; }
+
+/* ---------- sheet & toast ---------- */
+.overlay { position: fixed; inset: 0; z-index: 50; background: rgba(10, 12, 14, .55); display: flex; align-items: flex-end; justify-content: center; animation: fade .15s ease-out; }
+.sheet {
+  background: var(--bg); width: 100%; max-width: 560px; max-height: 92vh; overflow-y: auto;
+  border-radius: 16px 16px 0 0;
+  padding-top: 18px;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(18px, env(safe-area-inset-left, 0px));
+  padding-right: max(18px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 16px;
+  animation: rise .2s ease-out;
+}
+.sheet-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.sheet-head h2 { font-size: 1.5rem; }
+.icon-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); display: grid; place-items: center; color: var(--ink-2); flex: none; }
+@media (min-width: 700px) { .overlay { align-items: center; } .sheet { border-radius: 16px; } }
+@keyframes fade { from { opacity: 0; } }
+@keyframes rise { from { transform: translateY(24px); opacity: .6; } }
+
+#toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 60; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; width: max-content; max-width: calc(100vw - 32px); }
+.toast { background: var(--ink); color: var(--surface); padding: 12px 18px; border-radius: 8px; font-weight: 600; box-shadow: var(--shadow); display: flex; gap: 10px; align-items: center; animation: rise .2s ease-out; }
+.toast.warn { background: var(--danger); color: #fff; }
+.toast .icon { color: var(--accent); }
+.toast.warn .icon { color: #fff; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1000px) {
+  .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .mgr-grid, .detail-grid { grid-template-columns: minmax(0, 1fr); }
+  .side { position: static; }
+}
+@media (max-width: 760px) {
+  .login { grid-template-columns: minmax(0, 1fr); }
+  .login-brand { padding-block: 28px 36px; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); gap: 18px; }
+  .flow, .login-brand .bottom { display: none; }
+  .trow { min-width: 0; grid-template-columns: 64px minmax(0, 1fr); grid-template-areas: "img ttl" "img meta"; gap: 4px 12px; padding: 12px 14px; }
+  .trow.head { display: none; }
+  .trow > .c-id, .trow > .c-rep { display: none; }
+  .trow > .c-img { grid-area: img; align-self: start; }
+  .trow > .ttl { grid-area: ttl; }
+  .trow > .c-mob { grid-area: meta; display: flex !important; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+  .trow > .c-asg, .trow > .c-due, .trow > .c-st { display: none; }
+  .split { grid-template-columns: 1fr; }
+}
+@media (min-width: 761px) { .trow > .c-mob { display: none; } }
+@media (max-width: 520px) {
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kpi b { font-size: 2rem; }
+  .userbtn .who { display: none; }
+  .demo-tag { display: none; }
+  .title-block h1 { font-size: 1.6rem; }
+  .facts { grid-template-columns: 1fr; gap: 2px; }
+  .facts dd { margin-bottom: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+</style>
+</head>
+<body>
+  <div id="app"></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="sheet-root"></div>
+  <script>
+/*
+ * SiteProof — domain logic and local state.
+ * All data is fictional and lives only in this browser (localStorage).
+ * No APIs, no server, no real authentication.
+ *
+ * Works in the browser (window.SP.store) and in Node (require) for tests.
+ */
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  else { root.SP = root.SP || {}; root.SP.store = api; }
+})(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  const STORAGE_KEY = 'siteproof.demo.v1';
+  const DATA_VERSION = 1;
+
+  const STATUS = {
+    reported:    { label: 'New',              order: 0 },
+    assigned:    { label: 'Assigned',         order: 1 },
+    in_progress: { label: 'In progress',      order: 2 },
+    rework:      { label: 'Rework needed',    order: 3 },
+    review:      { label: 'Ready for review', order: 4 },
+    closed:      { label: 'Closed',           order: 5 }
+  };
+  const ACTIVE = ['assigned', 'in_progress', 'rework'];
+  const PRIORITY = { low: 'Low', normal: 'Normal', high: 'High', urgent: 'Urgent' };
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  /* ---------- date helpers (local calendar dates as YYYY-MM-DD) ---------- */
+  const pad = (n) => String(n).padStart(2, '0');
+  function localDate(d) { return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; }
+  function parseDay(s) { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); }
+  function addDays(s, n) { const d = parseDay(s); d.setDate(d.getDate() + n); return localDate(d); }
+  function daysBetween(a, b) {
+    const [y1, m1, d1] = a.split('-').map(Number);
+    const [y2, m2, d2] = b.split('-').map(Number);
+    return Math.round((Date.UTC(y2, m2 - 1, d2) - Date.UTC(y1, m1 - 1, d1)) / 86400000);
+  }
+  function isValidDay(s) { return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s) && !isNaN(parseDay(s)); }
+  function fmtDay(s) { if (!s) return '—'; const d = parseDay(s); return `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`; }
+
+  function isOverdue(issue, todayStr) {
+    return !!issue.dueDate && ACTIVE.includes(issue.status) && issue.dueDate < todayStr;
+  }
+  function pendingRequests(issue) { return (issue.requests || []).filter((r) => r.status === 'pending'); }
+
+  /* ---------- store ---------- */
+  function createStore(seedFn, storage, nowFn) {
+    nowFn = nowFn || (() => new Date());
+    const helpers = { localDate, addDays };
+    const listeners = new Set();
+
+    function fresh() { return seedFn(nowFn(), helpers); }
+    function load() {
+      try {
+        const raw = storage && storage.getItem(STORAGE_KEY);
+        if (raw) {
+          const s = JSON.parse(raw);
+          if (s && s.version === DATA_VERSION && Array.isArray(s.issues)) return s;
+        }
+      } catch (e) { /* corrupted or blocked storage: fall back to demo data */ }
+      return fresh();
+    }
+
+    let state = load();
+    let persisted = save();
+
+    function save() {
+      if (!storage) return false;
+      try { storage.setItem(STORAGE_KEY, JSON.stringify(state)); return true; }
+      catch (e) { return false; }
+    }
+    function commit() {
+      persisted = save();
+      listeners.forEach((fn) => fn(state));
+      return { persisted };
+    }
+
+    const today = () => localDate(nowFn());
+    const iso = () => nowFn().toISOString();
+    const nextId = (p) => p + (state.nextId++);
+    const user = (id) => state.users.find((u) => u.id === id);
+    const nameOf = (id) => (user(id) ? user(id).name : 'Unknown');
+
+    function issue(id) {
+      const i = state.issues.find((x) => x.id === id);
+      if (!i) throw new Error('This issue no longer exists.');
+      return i;
+    }
+    function asManager(id) {
+      const u = user(id);
+      if (!u || u.role !== 'manager') throw new Error('Only a site manager can do this.');
+      return u;
+    }
+    function asWorker(id) {
+      const u = user(id);
+      if (!u || u.role !== 'worker') throw new Error('Only site staff can do this.');
+      return u;
+    }
+    function asAssignee(uid, i) {
+      if (i.assigneeId !== uid) throw new Error('Only the person responsible for this task can do this.');
+    }
+    function onTeam(uid, i) { return i.assigneeId === uid || (i.helperIds || []).includes(uid); }
+    function log(i, by, type, text, note) {
+      const e = { id: nextId('e'), at: iso(), by, type, text };
+      if (note) e.note = note;
+      i.events.push(e);
+    }
+    const clean = (v) => (typeof v === 'string' ? v.trim() : '');
+
+    /* ---------- session (demo login, not real authentication) ---------- */
+    function login(userId) {
+      if (!user(userId)) throw new Error('No demo account with that name.');
+      state.session = { userId };
+      return commit();
+    }
+    function logout() { state.session = { userId: null }; return commit(); }
+
+    /* ---------- field: report an issue ---------- */
+    function createIssue(uid, d) {
+      asWorker(uid);
+      const title = clean(d.title);
+      const description = clean(d.description);
+      const building = clean(d.building);
+      const floor = clean(d.floor);
+      const room = clean(d.room);
+      if (title.length < 3) throw new Error('Give the issue a short title (at least 3 characters).');
+      if (title.length > 80) throw new Error('Keep the title under 80 characters.');
+      if (!building || !floor) throw new Error('Choose the building and floor.');
+      if (description.length < 5) throw new Error('Describe what you saw (at least a few words).');
+      let observedAt = null;
+      if (!d.observedUnknown) {
+        const t = new Date(d.observedAt);
+        if (!d.observedAt || isNaN(t)) throw new Error('Enter when you first noticed it, or tick “Not sure”.');
+        if (t.getTime() > nowFn().getTime() + 5 * 60000) throw new Error('“First noticed” can’t be in the future.');
+        observedAt = t.toISOString();
+      }
+      const i = {
+        id: `SP-${state.nextIssueNo++}`,
+        title,
+        category: clean(d.category) || 'Other',
+        location: { building, floor, room, detail: clean(d.detail) },
+        description,
+        observedAt,
+        observedUnknown: !!d.observedUnknown,
+        cause: d.causeUnknown ? '' : clean(d.cause),
+        causeUnknown: !!d.causeUnknown || !clean(d.cause),
+        hazard: !!d.hazard,
+        photo: d.photo ? { type: 'data', src: d.photo } : null,
+        reporterId: uid,
+        createdAt: iso(),
+        status: 'reported',
+        priority: null,
+        assigneeId: null,
+        helperIds: [],
+        instructions: '',
+        dueDate: null,
+        assignedAt: null,
+        completion: null,
+        reworkReason: '',
+        closedAt: null,
+        requests: [],
+        events: []
+      };
+      log(i, uid, 'reported', 'Reported the issue');
+      state.issues.unshift(i);
+      return Object.assign(commit(), { issue: i });
+    }
+
+    /* ---------- manager: assign ---------- */
+    function assignIssue(mid, id, d) {
+      asManager(mid);
+      const i = issue(id);
+      if (i.status !== 'reported') throw new Error('This issue has already been assigned.');
+      const worker = user(d.assigneeId);
+      if (!worker || worker.role !== 'worker') throw new Error('Choose who will fix this.');
+      if (!isValidDay(d.dueDate)) throw new Error('Choose a deadline.');
+      if (d.dueDate < today()) throw new Error('The deadline can’t be in the past.');
+      const instructions = clean(d.instructions);
+      if (instructions.length < 3) throw new Error('Write short instructions for the worker.');
+      i.assigneeId = worker.id;
+      i.helperIds = [];
+      i.priority = PRIORITY[d.priority] ? d.priority : 'normal';
+      i.dueDate = d.dueDate;
+      i.instructions = instructions;
+      i.assignedAt = iso();
+      i.status = 'assigned';
+      log(i, mid, 'assigned', `Assigned to ${worker.name}, due ${fmtDay(d.dueDate)}`);
+      return commit();
+    }
+
+    function updateAssignment(mid, id, d) {
+      asManager(mid);
+      const i = issue(id);
+      if (!ACTIVE.includes(i.status)) throw new Error('You can only change open tasks.');
+      const changes = [];
+      if (d.assigneeId && d.assigneeId !== i.assigneeId) {
+        const w = user(d.assigneeId);
+        if (!w || w.role !== 'worker') throw new Error('Choose a valid worker.');
+        i.assigneeId = w.id;
+        i.helperIds = (i.helperIds || []).filter((h) => h !== w.id);
+        if (i.status === 'in_progress') i.status = 'assigned';
+        changes.push(`reassigned to ${w.name}`);
+      }
+      if (d.dueDate && d.dueDate !== i.dueDate) {
+        if (!isValidDay(d.dueDate) || d.dueDate < today()) throw new Error('The new deadline can’t be in the past.');
+        i.dueDate = d.dueDate;
+        changes.push(`deadline moved to ${fmtDay(d.dueDate)}`);
+      }
+      const ins = clean(d.instructions);
+      if (ins && ins !== i.instructions) { i.instructions = ins; changes.push('instructions updated'); }
+      if (!changes.length) throw new Error('Nothing has changed.');
+      const text = changes.join(', ');
+      log(i, mid, 'updated', text.charAt(0).toUpperCase() + text.slice(1));
+      return commit();
+    }
+
+    /* ---------- worker: progress ---------- */
+    function startWork(uid, id) {
+      const i = issue(id);
+      asAssignee(uid, i);
+      if (!['assigned', 'rework'].includes(i.status)) throw new Error('This task has already been started.');
+      i.status = 'in_progress';
+      log(i, uid, 'started', i.reworkReason ? 'Started the rework' : 'Started work');
+      return commit();
+    }
+
+    function addNote(uid, id, text) {
+      const i = issue(id);
+      const u = user(uid);
+      if (!u || (u.role !== 'manager' && !onTeam(uid, i))) throw new Error('Only people on this task can add updates.');
+      const t = clean(text);
+      if (t.length < 2) throw new Error('Write a short update first.');
+      log(i, uid, 'note', 'Added an update', t);
+      return commit();
+    }
+
+    function submitForReview(uid, id, d) {
+      const i = issue(id);
+      asAssignee(uid, i);
+      if (i.status !== 'in_progress') throw new Error('Start the work before marking it as done.');
+      const note = clean(d.note);
+      if (note.length < 3) throw new Error('Say briefly what you did.');
+      i.completion = { note, photo: d.photo ? { type: 'data', src: d.photo } : null, at: iso(), by: uid };
+      i.status = 'review';
+      log(i, uid, 'review', 'Marked the work as done and sent it for review', note);
+      return commit();
+    }
+
+    function requestTime(uid, id, d) {
+      const i = issue(id);
+      if (!onTeam(uid, i)) throw new Error('Only people on this task can ask for more time.');
+      if (!ACTIVE.includes(i.status)) throw new Error('You can only ask for more time on an open task.');
+      if (pendingRequests(i).some((r) => r.type === 'time')) throw new Error('You already asked for more time. Wait for the manager’s answer.');
+      if (!isValidDay(d.proposedDate)) throw new Error('Choose the date you need.');
+      if (d.proposedDate < today() || (i.dueDate && d.proposedDate <= i.dueDate)) throw new Error('Pick a date after the current deadline.');
+      const reason = clean(d.reason);
+      if (reason.length < 3) throw new Error('Explain why you need more time.');
+      i.requests.push({ id: nextId('r'), type: 'time', by: uid, at: iso(), reason, proposedDate: d.proposedDate, status: 'pending' });
+      log(i, uid, 'request', `Asked for more time, until ${fmtDay(d.proposedDate)}`, reason);
+      return commit();
+    }
+
+    function requestWorkers(uid, id, d) {
+      const i = issue(id);
+      if (!onTeam(uid, i)) throw new Error('Only people on this task can ask for help.');
+      if (!ACTIVE.includes(i.status)) throw new Error('You can only ask for help on an open task.');
+      if (pendingRequests(i).some((r) => r.type === 'workers')) throw new Error('You already asked for more workers. Wait for the manager’s answer.');
+      const count = Number(d.count);
+      if (!Number.isInteger(count) || count < 1 || count > 5) throw new Error('Choose how many people you need (1–5).');
+      const reason = clean(d.reason);
+      if (reason.length < 3) throw new Error('Explain why you need help.');
+      i.requests.push({ id: nextId('r'), type: 'workers', by: uid, at: iso(), reason, count, trade: clean(d.trade), status: 'pending' });
+      log(i, uid, 'request', `Asked for ${count} more ${count === 1 ? 'person' : 'people'}${clean(d.trade) ? ` (${clean(d.trade)})` : ''}`, reason);
+      return commit();
+    }
+
+    /* ---------- manager: follow-up ---------- */
+    function resolveRequest(mid, id, reqId, d) {
+      asManager(mid);
+      const i = issue(id);
+      const r = (i.requests || []).find((x) => x.id === reqId);
+      if (!r) throw new Error('This request no longer exists.');
+      if (r.status !== 'pending') throw new Error('This request has already been answered.');
+      const response = clean(d.response);
+      if (d.decision === 'approve') {
+        if (r.type === 'time') {
+          if (!isValidDay(d.newDate) || d.newDate < today()) throw new Error('Choose a new deadline from today onwards.');
+          i.dueDate = d.newDate;
+          log(i, mid, 'request_approved', `Approved more time. New deadline ${fmtDay(d.newDate)}`, response);
+        } else {
+          const ids = (d.helperIds || []).filter((h) => user(h) && user(h).role === 'worker' && !onTeam(h, i));
+          if (!ids.length) throw new Error('Choose at least one person to add to the task.');
+          i.helperIds = (i.helperIds || []).concat(ids);
+          log(i, mid, 'request_approved', `Added ${ids.map(nameOf).join(' and ')} to the task`, response);
+        }
+        r.status = 'approved';
+      } else if (d.decision === 'decline') {
+        r.status = 'declined';
+        log(i, mid, 'request_declined', r.type === 'time' ? 'Declined the request for more time' : 'Declined the request for more workers', response);
+      } else {
+        throw new Error('Choose approve or decline.');
+      }
+      r.response = response;
+      r.resolvedAt = iso();
+      r.resolvedBy = mid;
+      return commit();
+    }
+
+    function closeIssue(mid, id, note) {
+      asManager(mid);
+      const i = issue(id);
+      if (i.status !== 'review') throw new Error('Only work that is ready for review can be closed.');
+      i.status = 'closed';
+      i.closedAt = iso();
+      i.reworkReason = '';
+      (i.requests || []).forEach((r) => { if (r.status === 'pending') { r.status = 'withdrawn'; r.resolvedAt = iso(); } });
+      log(i, mid, 'closed', 'Checked the work and closed the issue', clean(note));
+      return commit();
+    }
+
+    function returnIssue(mid, id, reason) {
+      asManager(mid);
+      const i = issue(id);
+      if (i.status !== 'review') throw new Error('Only work that is ready for review can be sent back.');
+      const r = clean(reason);
+      if (r.length < 3) throw new Error('Tell the worker what still needs fixing.');
+      i.status = 'rework';
+      i.reworkReason = r;
+      log(i, mid, 'returned', 'Sent back for rework', r);
+      return commit();
+    }
+
+    function reset() {
+      const session = state.session;
+      state = fresh();
+      state.session = session && user(session.userId) ? session : { userId: null };
+      return commit();
+    }
+
+    return {
+      get: () => state,
+      subscribe: (fn) => { listeners.add(fn); return () => listeners.delete(fn); },
+      isPersisted: () => persisted,
+      today,
+      login, logout, reset,
+      createIssue, assignIssue, updateAssignment,
+      startWork, addNote, submitForReview, requestTime, requestWorkers,
+      resolveRequest, closeIssue, returnIssue
+    };
+  }
+
+  return {
+    STORAGE_KEY, STATUS, ACTIVE, PRIORITY,
+    createStore, localDate, addDays, daysBetween, fmtDay, isValidDay, isOverdue, pendingRequests
+  };
+});
+
+</script>
+  <script>
+/*
+ * SiteProof — illustrated stand-ins for site photos in the demo data.
+ * They are drawn as SVG so the repo contains no real photographs.
+ * Red dashed rings mark the problem, the way people mark up photos on site.
+ */
+(function (root) {
+  'use strict';
+  const cache = {};
+  const W = 800, H = 600;
+
+  const frame = (bg, body) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${bg[0]}"/><stop offset="1" stop-color="${bg[1]}"/></linearGradient>
+<radialGradient id="vig" cx="50%" cy="45%" r="75%"><stop offset="60%" stop-color="#000" stop-opacity="0"/><stop offset="100%" stop-color="#000" stop-opacity=".38"/></radialGradient>
+<filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .16 0"/></filter>
+</defs>
+<rect width="${W}" height="${H}" fill="url(#bg)"/>
+${body}
+<rect width="${W}" height="${H}" filter="url(#grain)"/>
+<rect width="${W}" height="${H}" fill="url(#vig)"/>
+</svg>`;
+
+  const mark = (cx, cy, r) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#E53935" stroke-width="7" stroke-dasharray="18 11" stroke-linecap="round" opacity=".95"/>`;
+
+  const scenes = {
+    window: () => frame(['#d8cfc2', '#c4b9aa'], `
+<rect x="140" y="70" width="520" height="440" fill="#eceae6" stroke="#a9adb0" stroke-width="4"/>
+<rect x="165" y="95" width="225" height="390" fill="#f7f7f5" stroke="#9ea3a7" stroke-width="3"/>
+<rect x="185" y="115" width="185" height="350" fill="#a8c8e6"/>
+<path d="M185 115 L370 115 L370 300 Z" fill="#d4e5f3" opacity=".7"/>
+<g transform="rotate(2.4 635 485)"><rect x="410" y="95" width="225" height="390" fill="#f7f7f5" stroke="#9ea3a7" stroke-width="3"/>
+<rect x="430" y="115" width="185" height="350" fill="#9dbfdf"/><path d="M430 115 L615 115 L615 280 Z" fill="#cfe1f1" opacity=".7"/></g>
+<rect x="398" y="270" width="8" height="60" rx="3" fill="#8b9196"/>
+<rect x="120" y="505" width="560" height="22" fill="#d9d6d0"/>
+${mark(628, 108, 46)}`),
+
+    cable: () => frame(['#bdbfbc', '#a5a7a4'], `
+<rect x="0" y="0" width="800" height="70" fill="#8d918f"/>
+<rect x="80" y="70" width="640" height="10" fill="#7d8180"/>
+<rect x="300" y="150" width="200" height="160" rx="6" fill="#d7d9da" stroke="#8f9496" stroke-width="4"/>
+<rect x="318" y="168" width="164" height="124" rx="4" fill="#4a4f53"/>
+<path d="M350 290 C 340 360, 300 400, 290 470" stroke="#7a4b2a" stroke-width="12" fill="none" stroke-linecap="round"/>
+<path d="M400 290 C 410 370, 430 410, 420 480" stroke="#2d63b8" stroke-width="12" fill="none" stroke-linecap="round"/>
+<path d="M445 290 C 470 350, 520 380, 540 450" stroke="#55585a" stroke-width="12" fill="none" stroke-linecap="round"/>
+<circle cx="290" cy="474" r="7" fill="#c8843f"/><circle cx="420" cy="484" r="7" fill="#c8843f"/><circle cx="540" cy="454" r="7" fill="#c8843f"/>
+<rect x="560" y="520" width="150" height="40" rx="4" fill="#d1d3d4" transform="rotate(-8 635 540)"/>
+${mark(410, 330, 140)}`),
+
+    crack: () => frame(['#ebe8e3', '#d9d5cf'], `
+<rect x="250" y="210" width="300" height="390" fill="#f4f2ee" stroke="#b9b5ae" stroke-width="6"/>
+<rect x="268" y="228" width="264" height="372" fill="#e2ded7"/>
+<circle cx="505" cy="420" r="9" fill="#9a9690"/>
+<path d="M550 210 L575 186 L571 170 L596 148 L592 132 L618 106 L629 82" stroke="#4d4944" stroke-width="4" fill="none" stroke-linejoin="round"/>
+<path d="M592 132 L608 128" stroke="#4d4944" stroke-width="2.5" fill="none"/>
+${mark(592, 146, 78)}`),
+
+    leak: () => frame(['#6b5440', '#4e3c2d'], `
+<rect x="60" y="0" width="680" height="40" fill="#cfcac3"/>
+<rect x="60" y="40" width="680" height="560" fill="#5c4836"/>
+<rect x="60" y="520" width="680" height="80" fill="#7a6450"/>
+<path d="M330 40 L330 170 Q330 220 380 220 L470 220 Q510 220 510 180 L510 150" stroke="#b7bcbf" stroke-width="22" fill="none"/>
+<rect x="490" y="40" width="40" height="110" fill="#aeb3b6"/>
+<rect x="318" y="150" width="24" height="26" fill="#8f9598"/>
+<path d="M420 238 q6 14 0 22 q-6 -8 0 -22z" fill="#9bd0f2"/><path d="M432 290 q6 14 0 22 q-6 -8 0 -22z" fill="#9bd0f2"/>
+<ellipse cx="420" cy="545" rx="210" ry="34" fill="#7fb6dc" opacity=".55"/>
+<ellipse cx="400" cy="540" rx="120" ry="16" fill="#cbe6f7" opacity=".45"/>
+${mark(424, 230, 62)}`),
+
+    railing: () => frame(['#c9ccce', '#b3b6b8'], `
+<path d="M0 600 L0 520 L120 520 L120 460 L240 460 L240 400 L360 400 L360 340 L480 340 L480 280 L600 280 L600 220 L800 220 L800 600 Z" fill="#9fa3a6"/>
+<path d="M0 520 L120 520 L120 460 L240 460 L240 400 L360 400 L360 340 L480 340 L480 280 L600 280 L600 220 L800 220" stroke="#7d8184" stroke-width="5" fill="none"/>
+<line x1="40" y1="380" x2="760" y2="70" stroke="#3d4246" stroke-width="16" stroke-linecap="round"/>
+<rect x="180" y="300" width="18" height="40" fill="#5b6064"/><rect x="186" y="336" width="40" height="10" fill="#5b6064"/>
+<rect x="560" y="140" width="40" height="10" fill="#8a8e91" opacity=".6"/>
+<circle cx="567" cy="145" r="4" fill="#4c5054"/><circle cx="593" cy="145" r="4" fill="#4c5054"/>
+${mark(578, 140, 70)}`),
+
+    tiles: () => {
+      let t = '';
+      for (let r = 0; r < 6; r++) {
+        const off = r === 2 ? 22 : 0;
+        for (let c = -1; c < 7; c++) {
+          t += `<rect x="${c * 130 + off + 4}" y="${r * 100 + 4}" width="122" height="92" fill="#f3f4f2" stroke="#cfd2d0" stroke-width="2"/>`;
+        }
+      }
+      return frame(['#d8dad8', '#c9ccca'], `<rect width="800" height="600" fill="#bfc3c1"/>${t}${mark(420, 250, 90)}`);
+    },
+
+    socket: () => frame(['#e4e1dc', '#cfcbc4'], `
+<rect x="250" y="180" width="300" height="190" rx="6" fill="#bdb8b0" stroke="#a29d95" stroke-width="3"/>
+<circle cx="335" cy="275" r="60" fill="#55534f"/><circle cx="465" cy="275" r="60" fill="#55534f"/>
+<path d="M330 280 C 320 340, 360 380, 340 430" stroke="#7a4b2a" stroke-width="9" fill="none" stroke-linecap="round"/>
+<path d="M470 280 C 490 340, 450 380, 470 440" stroke="#2d63b8" stroke-width="9" fill="none" stroke-linecap="round"/>
+<circle cx="340" cy="433" r="6" fill="#c8843f"/><circle cx="470" cy="443" r="6" fill="#c8843f"/>
+${mark(400, 330, 150)}`),
+
+    paint: () => frame(['#eceeea', '#dcdfda'], `
+<rect x="520" y="60" width="220" height="540" fill="#9da3a6"/><rect x="626" y="60" width="6" height="540" fill="#7f8588"/>
+<rect x="0" y="560" width="800" height="40" fill="#cfd2cd"/>
+<path d="M120 400 C 220 380, 320 395, 440 372" stroke="#4b4b48" stroke-width="7" fill="none" stroke-linecap="round" opacity=".55"/>
+<path d="M150 420 C 260 410, 330 418, 470 398" stroke="#4b4b48" stroke-width="4" fill="none" stroke-linecap="round" opacity=".45"/>
+<path d="M300 440 C 360 430, 420 438, 500 425" stroke="#4b4b48" stroke-width="5" fill="none" stroke-linecap="round" opacity=".5"/>
+${mark(330, 410, 175)}`),
+
+    radiator: () => frame(['#e7e5e1', '#d4d1cc'], `
+<rect x="140" y="80" width="520" height="140" fill="#b9d3e8" stroke="#eef0ef" stroke-width="16"/>
+<rect x="160" y="300" width="480" height="220" rx="8" fill="#f2f2f0" stroke="#c7c9c8" stroke-width="3"/>
+${Array.from({ length: 15 }, (_, i) => `<rect x="${176 + i * 31}" y="312" width="18" height="196" rx="5" fill="#e3e4e2"/>`).join('')}
+<rect x="640" y="470" width="40" height="22" rx="4" fill="#c9cbca"/><circle cx="700" cy="481" r="18" fill="#efefed" stroke="#b5b7b6" stroke-width="3"/>
+${mark(400, 410, 170)}`),
+
+    light: () => frame(['#f1efea', '#c9c5be'], `
+<ellipse cx="400" cy="200" rx="150" ry="40" fill="#f9f8f5" stroke="#d4d0c9" stroke-width="4"/>
+<ellipse cx="400" cy="195" rx="110" ry="24" fill="#fff6d6"/>
+<g stroke="#e0b84a" stroke-width="5" stroke-linecap="round" opacity=".8">
+<line x1="260" y1="270" x2="230" y2="300"/><line x1="400" y1="280" x2="400" y2="320"/><line x1="540" y1="270" x2="570" y2="300"/></g>
+${mark(400, 200, 175)}`),
+
+    door: () => frame(['#d9d3ca', '#c3bcb2'], `
+<rect x="230" y="40" width="340" height="560" fill="#ece9e4" stroke="#b7b2aa" stroke-width="5"/>
+<rect x="258" y="68" width="284" height="532" fill="#a7835f"/>
+<rect x="258" y="68" width="284" height="532" fill="url(#bg)" opacity=".15"/>
+<rect x="500" y="330" width="60" height="14" rx="6" fill="#c4c7c9"/>
+<g stroke="#5d5048" stroke-width="3" stroke-linecap="round"><line x1="560" y1="290" x2="574" y2="368"/><line x1="566" y1="300" x2="578" y2="350"/><line x1="556" y1="320" x2="566" y2="380"/></g>
+${mark(568, 336, 64)}`),
+
+    insulation: () => frame(['#ddd8d0', '#c8c2b9'], `
+<rect x="120" y="60" width="560" height="480" fill="#c9c4bb"/>
+<rect x="200" y="110" width="400" height="380" fill="#f5f5f3" stroke="#a7abad" stroke-width="4"/>
+<rect x="224" y="134" width="352" height="332" fill="#a9c7e2"/>
+<rect x="600" y="110" width="30" height="380" fill="#6a6f73"/>
+<rect x="604" y="150" width="22" height="300" fill="#d6dbe0"/>
+<g fill="#f2d36b"><circle cx="612" cy="170" r="12"/><circle cx="618" cy="196" r="10"/><circle cx="610" cy="222" r="9"/></g>
+${mark(615, 300, 110)}`)
+  };
+
+  function scene(name) {
+    if (!cache[name]) {
+      const fn = scenes[name] || scenes.crack;
+      cache[name] = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(fn());
+    }
+    return cache[name];
+  }
+
+  root.SP = root.SP || {};
+  root.SP.scene = scene;
+})(typeof self !== 'undefined' ? self : this);
+
+</script>
+  <script>
+/*
+ * SiteProof — fictional demo data.
+ * Every person, project, issue and photo here is invented for the course prototype.
+ * Dates are generated relative to "now" so the demo always looks current.
+ */
+(function (root, factory) {
+  const fn = factory();
+  if (typeof module === 'object' && module.exports) module.exports = fn;
+  else { root.SP = root.SP || {}; root.SP.seed = fn; }
+})(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  return function seed(now, H) {
+    const today = H.localDate(now);
+    const day = (n) => H.addDays(today, n);
+    const ago = (hours) => new Date(now.getTime() - hours * 3600000).toISOString();
+    let ev = 0;
+    const E = (h, by, type, text, note) => {
+      const e = { id: 'e' + (++ev), at: ago(h), by, type, text };
+      if (note) e.note = note;
+      return e;
+    };
+    const fmt = (s) => {
+      const D = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const [y, m, d] = s.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      return `${D[dt.getDay()]} ${d} ${M[m - 1]}`;
+    };
+
+    const users = [
+      { id: 'm1', role: 'manager', name: 'Katrin Vogel',   title: 'Site manager',              username: 'k.vogel',   color: '#2F6FDB' },
+      { id: 'm2', role: 'manager', name: 'Stefan Krämer',  title: 'Project manager',           username: 's.kraemer', color: '#7B4FD6' },
+      { id: 'w1', role: 'worker',  name: 'Lukas Becker',   title: 'Window & door fitter',      username: 'l.becker',  color: '#C26A12' },
+      { id: 'w2', role: 'worker',  name: 'Ayşe Demir',     title: 'Electrician',               username: 'a.demir',   color: '#178A5A' },
+      { id: 'w3', role: 'worker',  name: 'Tomasz Nowak',   title: 'Drywall & plastering',      username: 't.nowak',   color: '#B23B5E' },
+      { id: 'w4', role: 'worker',  name: 'Jonas Weber',    title: 'Plumber',                   username: 'j.weber',   color: '#1F7EA8' },
+      { id: 'w5', role: 'worker',  name: 'Mira Schulz',    title: 'Quality inspector',         username: 'm.schulz',  color: '#8A6A12' },
+      { id: 'w6', role: 'worker',  name: 'Emre Yılmaz',    title: 'General site work',         username: 'e.yilmaz',  color: '#5C6670' }
+    ];
+
+    const base = (o) => Object.assign({
+      category: 'Workmanship', observedUnknown: false, cause: '', causeUnknown: true, hazard: false,
+      priority: null, assigneeId: null, helperIds: [], instructions: '', dueDate: null, assignedAt: null,
+      completion: null, reworkReason: '', closedAt: null, requests: [], events: []
+    }, o);
+
+    const issues = [
+      base({
+        id: 'SP-1037', title: 'Socket cover missing, wires visible', category: 'Electrical', hazard: true,
+        location: { building: 'C', floor: 'Basement', room: 'C-008', detail: 'Storage room, wall left of the door' },
+        description: 'The double socket next to the door has no cover plate. Two wire ends are visible and not taped.',
+        observedAt: ago(0.5), photo: { type: 'scene', scene: 'socket' },
+        reporterId: 'w5', createdAt: ago(0.3), status: 'reported',
+        events: [E(0.3, 'w5', 'reported', 'Reported the issue')]
+      }),
+      base({
+        id: 'SP-1035', title: 'Handrail bracket missing', category: 'Safety', hazard: true,
+        location: { building: 'A', floor: 'Floor 2', room: 'Staircase 1', detail: 'Between floor 1 and floor 2' },
+        description: 'The upper bracket of the handrail is missing. The rail moves about 3 cm when you lean on it.',
+        observedAt: ago(1.5), photo: { type: 'scene', scene: 'railing' },
+        reporterId: 'w3', createdAt: ago(1.2), status: 'reported',
+        events: [E(1.2, 'w3', 'reported', 'Reported the issue')]
+      }),
+      base({
+        id: 'SP-1036', title: 'Bathroom tiles not aligned', category: 'Workmanship',
+        location: { building: 'B', floor: 'Floor 2', room: 'B-207', detail: 'Wall behind the bathtub' },
+        description: 'Third row of tiles is offset by about 4 mm. The joints don’t line up with the corner.',
+        observedAt: ago(5), cause: 'Spacers were probably not used on that row.', causeUnknown: false,
+        photo: { type: 'scene', scene: 'tiles' },
+        reporterId: 'w4', createdAt: ago(3.5), status: 'reported',
+        events: [E(3.5, 'w4', 'reported', 'Reported the issue')]
+      }),
+      base({
+        id: 'SP-1032', title: 'Exposed cables at junction box', category: 'Electrical', hazard: true,
+        location: { building: 'A', floor: 'Floor 3', room: 'Stairwell', detail: 'Junction box above the fire door' },
+        description: 'Junction box is open and three cables hang out. The box cover is lying on the floor.',
+        observedAt: ago(5.5), photo: { type: 'scene', scene: 'cable' },
+        reporterId: 'w6', createdAt: ago(5), status: 'assigned',
+        priority: 'urgent', assigneeId: 'w2', dueDate: today, assignedAt: ago(4),
+        instructions: 'Make it safe first: switch off the circuit and tape off the area. Then close the box and fit the cover. Call me if the cables are damaged.',
+        events: [
+          E(5, 'w6', 'reported', 'Reported the issue'),
+          E(4, 'm1', 'assigned', `Assigned to Ayşe Demir, due ${fmt(today)}`)
+        ]
+      }),
+      base({
+        id: 'SP-1031', title: 'Window does not close', category: 'Installation',
+        location: { building: 'B', floor: 'Floor 2', room: 'B-204', detail: 'Living room, left window' },
+        description: 'The left window sash does not close fully. There is a gap of about 1 cm at the top corner and you can feel a draught.',
+        observedAt: ago(28), cause: 'Possibly hit when the scaffolding was taken down.', causeUnknown: false,
+        photo: { type: 'scene', scene: 'window' },
+        reporterId: 'w5', createdAt: ago(26), status: 'in_progress',
+        priority: 'high', assigneeId: 'w1', dueDate: today, assignedAt: ago(24),
+        instructions: 'Check both hinges and adjust the window fitting. Replace the hinge if it is bent. Check the seal afterwards.',
+        events: [
+          E(26, 'w5', 'reported', 'Reported the issue'),
+          E(24, 'm1', 'assigned', `Assigned to Lukas Becker, due ${fmt(today)}`),
+          E(3, 'w1', 'started', 'Started work'),
+          E(2, 'w1', 'note', 'Added an update', 'Top hinge is bent. Picking up a replacement hinge from the site container.')
+        ]
+      }),
+      base({
+        id: 'SP-1038', title: 'Balcony door seal damaged', category: 'Damage',
+        location: { building: 'B', floor: 'Floor 2', room: 'B-210', detail: 'Balcony door, bottom edge' },
+        description: 'The rubber seal at the bottom of the balcony door is torn over about 20 cm.',
+        observedAt: ago(22), photo: { type: 'scene', scene: 'door' },
+        reporterId: 'w2', createdAt: ago(20), status: 'assigned',
+        priority: 'normal', assigneeId: 'w1', dueDate: day(3), assignedAt: ago(18),
+        instructions: 'Replace the bottom seal on the balcony door. The seal profile is in container 2, shelf C.',
+        events: [
+          E(20, 'w2', 'reported', 'Reported the issue'),
+          E(18, 'm1', 'assigned', `Assigned to Lukas Becker, due ${fmt(day(3))}`)
+        ]
+      }),
+      base({
+        id: 'SP-1034', title: 'Water leak under kitchen sink', category: 'Plumbing',
+        location: { building: 'B', floor: 'Floor 3', room: 'B-301', detail: 'Kitchen, cabinet under the sink' },
+        description: 'Water is dripping from the siphon connection. There is a puddle in the cabinet and the base panel is swelling.',
+        observedAt: ago(52), photo: { type: 'scene', scene: 'leak' },
+        reporterId: 'w5', createdAt: ago(50), status: 'in_progress',
+        priority: 'high', assigneeId: 'w4', dueDate: day(-1), assignedAt: ago(48),
+        instructions: 'Find the leak and replace the siphon or seal. Dry out the cabinet and tell me if the base panel needs replacing.',
+        requests: [
+          { id: 'r1', type: 'time', by: 'w4', at: ago(6), status: 'pending', proposedDate: day(2),
+            reason: 'The supplier can only deliver the replacement siphon in two days. The water is shut off at the valve until then.' }
+        ],
+        events: [
+          E(50, 'w5', 'reported', 'Reported the issue'),
+          E(48, 'm1', 'assigned', `Assigned to Jonas Weber, due ${fmt(day(-1))}`),
+          E(30, 'w4', 'started', 'Started work'),
+          E(29, 'w4', 'note', 'Added an update', 'Siphon is cracked. Ordered a new one. Water shut off at the angle valve.'),
+          E(6, 'w4', 'request', `Asked for more time, until ${fmt(day(2))}`, 'The supplier can only deliver the replacement siphon in two days. The water is shut off at the valve until then.')
+        ]
+      }),
+      base({
+        id: 'SP-1040', title: 'Radiator not heating', category: 'Plumbing',
+        location: { building: 'C', floor: 'Floor 2', room: 'C-215', detail: 'Bedroom, under the window' },
+        description: 'Radiator stays cold even with the valve fully open. The radiators in the other rooms work.',
+        observedAt: ago(32), cause: 'Probably air or dirt in the radiator.', causeUnknown: false,
+        photo: { type: 'scene', scene: 'radiator' },
+        reporterId: 'w1', createdAt: ago(30), status: 'in_progress',
+        priority: 'normal', assigneeId: 'w4', dueDate: day(2), assignedAt: ago(27),
+        instructions: 'Bleed the radiator and check the valve. If that doesn’t help, take it off and flush it.',
+        requests: [
+          { id: 'r2', type: 'workers', by: 'w4', at: ago(2), status: 'pending', count: 1, trade: 'Plumber',
+            reason: 'Bleeding didn’t help. The radiator has to come off the wall to be flushed. I need a second person to lift and hold it.' }
+        ],
+        events: [
+          E(30, 'w1', 'reported', 'Reported the issue'),
+          E(27, 'm1', 'assigned', `Assigned to Jonas Weber, due ${fmt(day(2))}`),
+          E(8, 'w4', 'started', 'Started work'),
+          E(2, 'w4', 'request', 'Asked for 1 more person (Plumber)', 'Bleeding didn’t help. The radiator has to come off the wall to be flushed. I need a second person to lift and hold it.')
+        ]
+      }),
+      base({
+        id: 'SP-1043', title: 'Gap in insulation at window reveal', category: 'Workmanship',
+        location: { building: 'C', floor: 'Floor 3', room: 'C-310', detail: 'Right side of the window, inside' },
+        description: 'There is a gap of about 2 cm between the window frame and the wall. You can see the outside insulation board.',
+        observedAt: ago(46), photo: { type: 'scene', scene: 'insulation' },
+        reporterId: 'w5', createdAt: ago(45), status: 'in_progress',
+        priority: 'normal', assigneeId: 'w6', helperIds: ['w3'], dueDate: day(1), assignedAt: ago(42),
+        instructions: 'Fill the gap with expanding foam, cut it flush and fit the sealing tape. Tomasz will help with the plaster afterwards.',
+        requests: [
+          { id: 'r3', type: 'workers', by: 'w6', at: ago(28), status: 'approved', count: 1, trade: 'Plasterer',
+            reason: 'The reveal needs to be plastered again after the foam. I can’t do the plaster myself.',
+            response: 'Tomasz will join you tomorrow morning.', resolvedAt: ago(20), resolvedBy: 'm1' }
+        ],
+        events: [
+          E(45, 'w5', 'reported', 'Reported the issue'),
+          E(42, 'm1', 'assigned', `Assigned to Emre Yılmaz, due ${fmt(day(1))}`),
+          E(30, 'w6', 'started', 'Started work'),
+          E(28, 'w6', 'request', 'Asked for 1 more person (Plasterer)', 'The reveal needs to be plastered again after the foam. I can’t do the plaster myself.'),
+          E(20, 'm1', 'request_approved', 'Added Tomasz Nowak to the task', 'Tomasz will join you tomorrow morning.')
+        ]
+      }),
+      base({
+        id: 'SP-1033', title: 'Crack in drywall above door', category: 'Workmanship',
+        location: { building: 'C', floor: 'Floor 1', room: 'C-112', detail: 'Hallway, above the bathroom door' },
+        description: 'Diagonal crack about 30 cm long starting at the top right corner of the door frame.',
+        observedAt: ago(76), cause: 'Board joint at the corner of the door opening.', causeUnknown: false,
+        photo: { type: 'scene', scene: 'crack' },
+        reporterId: 'w1', createdAt: ago(74), status: 'review',
+        priority: 'normal', assigneeId: 'w3', dueDate: day(1), assignedAt: ago(70),
+        instructions: 'Open up the crack, tape and fill it. Leave it ready for painting.',
+        completion: { note: 'Opened the crack, taped it with mesh and filled it twice. Sanded smooth. Ready for paint.', photo: null, at: ago(1.5), by: 'w3' },
+        events: [
+          E(74, 'w1', 'reported', 'Reported the issue'),
+          E(70, 'm1', 'assigned', `Assigned to Tomasz Nowak, due ${fmt(day(1))}`),
+          E(30, 'w3', 'started', 'Started work'),
+          E(1.5, 'w3', 'review', 'Marked the work as done and sent it for review', 'Opened the crack, taped it with mesh and filled it twice. Sanded smooth. Ready for paint.')
+        ]
+      }),
+      base({
+        id: 'SP-1039', title: 'Paint scuffs in corridor', category: 'Damage',
+        location: { building: 'A', floor: 'Ground floor', room: 'Corridor A-0', detail: 'Next to the lift door' },
+        description: 'Dark scuff marks on the freshly painted wall, probably from a trolley. About 1 m long.',
+        observedAt: ago(98), photo: { type: 'scene', scene: 'paint' },
+        reporterId: 'w6', createdAt: ago(96), status: 'rework',
+        priority: 'low', assigneeId: 'w3', dueDate: day(1), assignedAt: ago(90),
+        instructions: 'Clean and touch up the paint. Use the colour from the A-0 bucket in container 1.',
+        completion: { note: 'Cleaned the wall and touched up the paint.', photo: null, at: ago(28), by: 'w3' },
+        reworkReason: 'The scuff next to the lift door is still visible. Please repaint the whole panel, not just touch it up.',
+        events: [
+          E(96, 'w6', 'reported', 'Reported the issue'),
+          E(90, 'm1', 'assigned', `Assigned to Tomasz Nowak, due ${fmt(day(1))}`),
+          E(70, 'w3', 'started', 'Started work'),
+          E(28, 'w3', 'review', 'Marked the work as done and sent it for review', 'Cleaned the wall and touched up the paint.'),
+          E(4, 'm1', 'returned', 'Sent back for rework', 'The scuff next to the lift door is still visible. Please repaint the whole panel, not just touch it up.')
+        ]
+      }),
+      base({
+        id: 'SP-1041', title: 'Ceiling light flickering', category: 'Electrical',
+        location: { building: 'A', floor: 'Floor 1', room: 'A-105', detail: 'Kitchen ceiling light' },
+        description: 'The ceiling light flickers every few seconds when switched on.',
+        observedAt: ago(142), photo: { type: 'scene', scene: 'light' },
+        reporterId: 'w5', createdAt: ago(140), status: 'closed',
+        priority: 'normal', assigneeId: 'w2', dueDate: day(-3), assignedAt: ago(130),
+        instructions: 'Check the connection in the ceiling box and the lamp.',
+        completion: { note: 'Loose terminal in the ceiling box. Tightened it and tested for 10 minutes. No more flicker.', photo: null, at: ago(80), by: 'w2' },
+        closedAt: ago(60),
+        events: [
+          E(140, 'w5', 'reported', 'Reported the issue'),
+          E(130, 'm1', 'assigned', `Assigned to Ayşe Demir, due ${fmt(day(-3))}`),
+          E(100, 'w2', 'started', 'Started work'),
+          E(80, 'w2', 'review', 'Marked the work as done and sent it for review', 'Loose terminal in the ceiling box. Tightened it and tested for 10 minutes. No more flicker.'),
+          E(60, 'm1', 'closed', 'Checked the work and closed the issue', 'Checked on site, works fine.')
+        ]
+      }),
+      base({
+        id: 'SP-1042', title: 'Door frame scratched', category: 'Damage',
+        location: { building: 'B', floor: 'Floor 1', room: 'B-102', detail: 'Apartment entrance door' },
+        description: 'Deep scratches on the right side of the door frame at handle height.',
+        observedAt: ago(172), photo: { type: 'scene', scene: 'door' },
+        reporterId: 'w3', createdAt: ago(170), status: 'closed',
+        priority: 'low', assigneeId: 'w1', dueDate: day(-4), assignedAt: ago(160),
+        instructions: 'Fill and repaint the frame. Replace the frame cladding if the scratches are too deep.',
+        completion: { note: 'Filled, sanded and painted the frame. Scratches no longer visible.', photo: null, at: ago(120), by: 'w1' },
+        closedAt: ago(100),
+        events: [
+          E(170, 'w3', 'reported', 'Reported the issue'),
+          E(160, 'm1', 'assigned', `Assigned to Lukas Becker, due ${fmt(day(-4))}`),
+          E(140, 'w1', 'started', 'Started work'),
+          E(120, 'w1', 'review', 'Marked the work as done and sent it for review', 'Filled, sanded and painted the frame. Scratches no longer visible.'),
+          E(100, 'm1', 'closed', 'Checked the work and closed the issue')
+        ]
+      })
+    ];
+
+    return {
+      version: 1,
+      project: {
+        name: 'Wohnpark Ruhrblick',
+        code: 'WPR-26',
+        address: 'Fictional site · Bochum',
+        buildings: ['A', 'B', 'C'],
+        floors: ['Basement', 'Ground floor', 'Floor 1', 'Floor 2', 'Floor 3', 'Floor 4', 'Roof']
+      },
+      users,
+      issues,
+      nextIssueNo: 1044,
+      nextId: 100,
+      session: { userId: null },
+      seededAt: now.toISOString()
+    };
+  };
+});
+
+</script>
+  <script>
+/*
+ * SiteProof — user interface.
+ * Screens: Login → Worker (dashboard, report issue, task detail) and
+ *          Manager (dashboard, issue detail with assignment + follow-up).
+ */
+(function () {
+  'use strict';
+  const SP = window.SP;
+  const H = SP.store;
+
+  let storage = null;
+  try { const k = '__sp_test'; window.localStorage.setItem(k, '1'); window.localStorage.removeItem(k); storage = window.localStorage; }
+  catch (e) { storage = null; }
+
+  const store = H.createStore(SP.seed, storage);
+  const appEl = document.getElementById('app');
+  const toastEl = document.getElementById('toast');
+  const sheetRoot = document.getElementById('sheet-root');
+
+  let view = { name: 'login' };
+  let loginRole = 'worker';
+  let draftPhoto = null;   // photo on the report form
+  let donePhoto = null;    // photo on the "mark as done" sheet
+  let mgrFilter = 'open';
+  let mgrSearch = '';
+
+  /* ---------- icons ---------- */
+  const P = {
+    camera: '<path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.8"/>',
+    back: '<path d="M15 18l-6-6 6-6"/>',
+    chev: '<path d="M9 18l6-6-6-6"/>',
+    pin: '<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21z"/><circle cx="12" cy="10" r="2.3"/>',
+    clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+    check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+    alert: '<path d="M12 3.5L2.8 19.5h18.4L12 3.5z"/><path d="M12 10v4.2M12 17.2v.1"/>',
+    users: '<circle cx="9" cy="8.5" r="3.3"/><path d="M3 19.5c.6-3.3 3-5 6-5s5.4 1.7 6 5"/><path d="M16 5.6a3.2 3.2 0 0 1 0 6M17.5 14.6c1.8.6 3 2.2 3.5 4.9"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    calendar: '<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+    note: '<path d="M5 4h10l4 4v12H5z"/><path d="M15 4v4h4M8.5 12.5h7M8.5 16h5"/>',
+    logout: '<path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10"/>',
+    reset: '<path d="M4 12a8 8 0 1 0 2.4-5.7L4 8.5"/><path d="M4 4v4.5h4.5"/>',
+    x: '<path d="M6 6l12 12M18 6L6 18"/>',
+    image: '<rect x="3.5" y="4.5" width="17" height="15" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M20.5 16l-5-5-8 8.5"/>',
+    send: '<path d="M4 12l16-8-6 17-3-7-7-2z"/>',
+    helmet: '<path d="M3 17h18M5 17v-2a7 7 0 0 1 14 0v2"/><path d="M10 8.2V5.5h4v2.7"/>',
+    board: '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>',
+    search: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',
+    inbox: '<path d="M3.5 13.5l2.8-8h11.4l2.8 8v5a1 1 0 0 1-1 1H4.5a1 1 0 0 1-1-1z"/><path d="M3.5 13.5h5l1.2 2.2h4.6l1.2-2.2h5"/>',
+    play: '<path d="M7 5l12 7-12 7z"/>',
+    shield: '<path d="M12 3l7.5 3v5.5c0 4.5-3.3 8-7.5 9.5-4.2-1.5-7.5-5-7.5-9.5V6z"/>'
+  };
+  const icon = (n, cls = '') => `<svg class="icon ${cls}" viewBox="0 0 24 24" aria-hidden="true">${P[n] || ''}</svg>`;
+
+  /* ---------- helpers ---------- */
+  const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const S = () => store.get();
+  const me = () => userById(S().session.userId);
+  const userById = (id) => S().users.find((u) => u.id === id);
+  const issueById = (id) => S().issues.find((i) => i.id === id);
+  const today = () => store.today();
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const pad = (n) => String(n).padStart(2, '0');
+  const fmtDT = (iso) => { const d = new Date(iso); return `${d.getDate()} ${MONTHS[d.getMonth()]}, ${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+  function ago(iso) {
+    const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return `${mins} min ago`;
+    const h = Math.round(mins / 60);
+    if (h < 24) return `${h} h ago`;
+    const d = Math.round(h / 24);
+    return d === 1 ? 'yesterday' : `${d} days ago`;
+  }
+  const initials = (u) => u ? u.name.split(' ').map((p) => p[0]).slice(0, 2).join('') : '?';
+  const avatar = (u, size = '') => `<span class="avatar ${size}" style="background:${esc(u ? u.color : '#777')}" aria-hidden="true">${esc(initials(u))}</span>`;
+  const first = (u) => (u ? u.name.split(' ')[0] : '—');
+  const locText = (l) => [`Bldg ${l.building}`, l.floor, l.room].filter(Boolean).join(' · ');
+  const locLine = (l) => esc(locText(l));
+  const photoSrc = (p) => !p ? null : p.type === 'scene' ? SP.scene(p.scene) : p.src;
+  const badge = (status) => `<span class="badge st-${status}">${esc(H.STATUS[status].label)}</span>`;
+  const isLate = (i) => H.isOverdue(i, today());
+  const pending = (i) => H.pendingRequests(i);
+  const isWorkerIssue = (i, uid) => i.assigneeId === uid || (i.helperIds || []).includes(uid);
+  const greeting = () => { const h = new Date().getHours(); return h < 11 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening'; };
+  const longDate = () => new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+  const nowLocalInput = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16); };
+
+  function dueInfo(i) {
+    if (!i.dueDate || i.status === 'closed') return null;
+    const n = H.daysBetween(today(), i.dueDate);
+    if (i.status === 'review') return { text: `Due ${H.fmtDay(i.dueDate)}`, cls: '' };
+    if (n < 0) return { text: `${-n} day${n === -1 ? '' : 's'} overdue`, cls: 'late' };
+    if (n === 0) return { text: 'Due today', cls: 'today' };
+    if (n === 1) return { text: 'Due tomorrow', cls: '' };
+    return { text: `Due ${H.fmtDay(i.dueDate)}`, cls: '' };
+  }
+  const dueTag = (i) => { const d = dueInfo(i); return d ? `<span class="due ${d.cls}">${icon('clock')}${esc(d.text)}</span>` : ''; };
+  const prioTag = (p) => p ? `<span class="prio prio-${p}">${esc(H.PRIORITY[p])} priority</span>` : '';
+
+  /* ---------- toast / sheet ---------- */
+  function toast(msg, kind = '') {
+    const t = document.createElement('div');
+    t.className = `toast ${kind}`;
+    t.innerHTML = `${icon(kind === 'warn' ? 'alert' : 'check')}<span>${esc(msg)}</span>`;
+    toastEl.appendChild(t);
+    setTimeout(() => t.remove(), 3200);
+  }
+  function openSheet(title, body) {
+    sheetRoot.innerHTML = `<div class="overlay" data-action="close-sheet-bg"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+      <div class="sheet-head"><h2 id="sheet-title">${esc(title)}</h2><button class="icon-btn" data-action="close-sheet" aria-label="Close">${icon('x')}</button></div>
+      ${body}</div></div>`;
+    const f = sheetRoot.querySelector('input:not([type=hidden]):not([type=file]), textarea, select');
+    if (f) setTimeout(() => f.focus(), 50);
+  }
+  function closeSheet() { sheetRoot.innerHTML = ''; donePhoto = null; }
+
+  /** Run a store action; returns an error message or null. */
+  function act(fn, okMsg) {
+    try {
+      const r = fn();
+      if (r && r.persisted === false) toast('Saved for this visit only. This browser is not keeping data.', 'warn');
+      else if (okMsg) toast(okMsg);
+      return null;
+    } catch (err) { return err.message || 'Something went wrong.'; }
+  }
+  function showError(form, msg) {
+    const el = form.querySelector('.form-error');
+    if (el) { el.textContent = msg; el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+    else toast(msg, 'warn');
+  }
+
+  /* ---------- navigation ---------- */
+  function go(name, params = {}) {
+    view = Object.assign({ name }, params);
+    closeSheet();
+    render();
+    window.scrollTo(0, 0);
+  }
+  function home() {
+    const u = me();
+    if (!u) return go('login');
+    go(u.role === 'manager' ? 'm-home' : 'w-home');
+  }
+
+  /* ---------- shared header ---------- */
+  function header(width) {
+    const u = me(); const p = S().project;
+    return `<header class="band"><div class="wrap ${width} band-in">
+      <button class="brand" data-action="home" style="background:none;border:0;color:inherit;padding:0;text-align:left">
+        <span class="brand-mark">${icon('check')}</span>
+        <span class="brand-text"><span class="brand-name">SiteProof</span><span class="brand-sub">${esc(p.name)} · ${esc(p.code)}</span></span>
+      </button>
+      <div class="band-right">
+        <span class="demo-tag">Demo</span>
+        <button class="userbtn" data-action="menu" aria-label="Account menu">
+          <span class="who"><b>${esc(u.name)}</b><span>${esc(u.title)}</span></span>${avatar(u)}
+        </button>
+      </div></div><div class="stripe"></div></header>`;
+  }
+
+  /* =====================================================================
+     LOGIN
+     ===================================================================== */
+  function viewLogin() {
+    const users = S().users.filter((u) => u.role === loginRole);
+    const p = S().project;
+    return `<div class="login">
+      <section class="login-brand">
+        <div>
+          <div class="brand" style="margin-bottom:34px"><span class="brand-mark">${icon('check')}</span><span class="brand-name">SiteProof</span></div>
+          <div class="site-plate"><b>${esc(p.name)}</b><span>Project ${esc(p.code)} · Buildings ${p.buildings.join(', ')}</span><span>${esc(p.address)}</span></div>
+          <h1>Spot it.<br>Assign it.<br><em>Close it.</em></h1>
+          <p class="lead">Site problems go straight from the people who find them to the manager who decides, and back to the person who fixes them.</p>
+        </div>
+        <ol class="flow bottom">
+          <li><span class="n">01</span>Worker takes a photo and reports the issue</li>
+          <li><span class="n">02</span>Manager assigns a worker and a deadline</li>
+          <li><span class="n">03</span>Worker updates progress or asks for help</li>
+          <li><span class="n">04</span>Manager checks the work and closes it</li>
+        </ol>
+      </section>
+      <main class="login-main"><form class="login-card" data-form="login" novalidate>
+        <div><h2>Sign in</h2><p class="muted">Choose how you work on site.</p></div>
+        <div class="role-switch" role="group" aria-label="Sign in as">
+          <button type="button" class="role-btn" data-action="login-role" data-role="worker" aria-pressed="${loginRole === 'worker'}">
+            ${icon('helmet')}<b>Worker</b><span>Report issues, see my tasks</span></button>
+          <button type="button" class="role-btn" data-action="login-role" data-role="manager" aria-pressed="${loginRole === 'manager'}">
+            ${icon('board')}<b>Manager</b><span>Assign, follow up, close</span></button>
+        </div>
+        <div class="field"><label for="lg-user">Username</label>
+          <input type="text" id="lg-user" name="username" autocomplete="username" placeholder="${loginRole === 'worker' ? 'e.g. l.becker' : 'e.g. k.vogel'}" autocapitalize="none" spellcheck="false"></div>
+        <div class="field"><label for="lg-pass">Password</label>
+          <input type="password" id="lg-pass" name="password" autocomplete="current-password" placeholder="Any password works in the demo"></div>
+        <div class="form-error" role="alert"></div>
+        <button class="btn primary block" type="submit">Sign in as ${loginRole === 'worker' ? 'worker' : 'manager'}</button>
+        <div class="demo-accounts"><span class="label">Demo accounts · tap to fill in</span>
+          <div class="acct-list">${users.map((u) => `<button type="button" class="acct" data-action="pick-acct" data-user="${u.username}">${avatar(u, 'sm')}<span class="t"><b>${esc(u.name)}</b><span>${esc(u.title)}</span></span></button>`).join('')}</div>
+        </div>
+        <p class="demo-note">Demo mode. All people, issues and photos are fictional. There is no real sign-in, and data is saved only in this browser.</p>
+      </form></main></div>`;
+  }
+
+  /* =====================================================================
+     WORKER
+     ===================================================================== */
+  function taskCard(i, uid) {
+    const late = isLate(i);
+    const reqs = pending(i);
+    const isNew = i.status === 'assigned' && i.assignedAt && (Date.now() - new Date(i.assignedAt)) < 36 * 3600000;
+    const helper = i.assigneeId !== uid;
+    const lead = userById(i.assigneeId);
+    const others = (i.helperIds || []).filter((h) => h !== uid).map(userById);
+    return `<button class="task s-${i.status} ${late ? 'is-late' : ''} ${i.hazard ? 'is-hazard' : ''}" data-action="open-task" data-id="${i.id}">
+      <span class="task-top"><span class="mono faint">${i.id}${isNew ? ' <span class="new-dot">New</span>' : ''}</span>${late ? '<span class="badge overdue">Overdue</span>' : badge(i.status)}</span>
+      <span class="task-title">${esc(i.title)}</span>
+      <span class="loc">${icon('pin')}${locLine(i.location)}</span>
+      <span class="task-foot">${dueTag(i)}${prioTag(i.priority)}
+        ${i.hazard ? '<span class="badge hazard">Safety</span>' : ''}
+        ${helper ? `<span class="chip">${icon('users')}Helping ${esc(first(lead))}</span>` : ''}
+        ${!helper && others.length ? `<span class="chip">${icon('users')}With ${others.map((o) => esc(first(o))).join(', ')}</span>` : ''}
+        ${reqs.map((r) => `<span class="chip req">${icon('clock')}${r.type === 'time' ? 'More time asked' : 'Help asked'}</span>`).join('')}
+      </span></button>`;
+  }
+
+  function viewWorkerHome() {
+    const u = me(); const t = today();
+    const mine = S().issues.filter((i) => isWorkerIssue(i, u.id));
+    const active = mine.filter((i) => H.ACTIVE.includes(i.status));
+    const rank = (i) => (isLate(i) ? 0 : 1) * 10 + (['urgent', 'high', 'normal', 'low'].indexOf(i.priority || 'normal'));
+    const now = active.filter((i) => i.status !== 'assigned' || (i.dueDate && i.dueDate <= t))
+      .sort((a, b) => rank(a) - rank(b) || (a.dueDate || '').localeCompare(b.dueDate || ''));
+    const later = active.filter((i) => !now.includes(i)).sort((a, b) => (a.dueDate || '').localeCompare(b.dueDate || ''));
+    const waiting = mine.filter((i) => i.status === 'review');
+    const done = mine.filter((i) => i.status === 'closed').sort((a, b) => (b.closedAt || '').localeCompare(a.closedAt || '')).slice(0, 3);
+    const reports = S().issues.filter((i) => i.reporterId === u.id).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    const dueToday = active.filter((i) => i.dueDate === t).length;
+    const late = active.filter(isLate).length;
+
+    const reportStatus = (i) => {
+      if (i.status === 'reported') return 'Waiting for the manager';
+      if (i.status === 'closed') return 'Fixed and closed';
+      return `${H.STATUS[i.status].label} · ${esc(first(userById(i.assigneeId)))} is on it`;
+    };
+
+    return `${header('narrow')}<main class="wrap narrow page">
+      <div class="hello"><h1>${greeting()}, ${esc(first(u))}</h1><p>${esc(longDate())} · ${esc(u.title)}</p></div>
+      <button class="report-cta" data-action="go-report"><span class="cam">${icon('camera')}</span>
+        <span><b>Report an issue</b><span>Take a photo and tell the manager what you found</span></span>${icon('chev', 'chev')}</button>
+      <div class="stats">
+        <div class="stat"><b>${dueToday}</b><span>Due today</span></div>
+        <div class="stat ${late ? 'alert' : ''}"><b>${late}</b><span>Overdue</span></div>
+        <div class="stat"><b>${active.length}</b><span>Open tasks</span></div>
+      </div>
+      <section class="section"><div class="section-head"><h2>Today’s tasks</h2><span class="count">${now.length}</span></div>
+        ${now.length ? `<div class="task-list">${now.map((i) => taskCard(i, u.id)).join('')}</div>` : '<div class="empty">Nothing due today. New tasks from the manager will show up here.</div>'}</section>
+      <section class="section"><div class="section-head"><h2>Coming up</h2><span class="count">${later.length}</span></div>
+        ${later.length ? `<div class="task-list">${later.map((i) => taskCard(i, u.id)).join('')}</div>` : '<div class="empty">No other tasks scheduled.</div>'}</section>
+      ${waiting.length ? `<section class="section"><div class="section-head"><h2>Waiting for manager check</h2><span class="count">${waiting.length}</span></div>
+        <div class="task-list">${waiting.map((i) => taskCard(i, u.id)).join('')}</div></section>` : ''}
+      <section class="section"><div class="section-head"><h2>Issues I reported</h2><span class="count">${reports.length}</span></div>
+        ${reports.length ? `<div class="panel">${reports.map((i) => `<div class="report-row">
+          ${photoSrc(i.photo) ? `<img class="thumb" src="${photoSrc(i.photo)}" alt="">` : `<span class="thumb" style="display:grid;place-items:center;color:var(--ink-3)">${icon('image')}</span>`}
+          <div class="body"><b>${esc(i.title)}</b><span><span class="mono">${i.id}</span> · ${reportStatus(i)}</span></div></div>`).join('')}</div>`
+          : '<div class="empty">You haven’t reported anything yet.</div>'}</section>
+      ${done.length ? `<section class="section"><div class="section-head"><h2>Recently closed</h2></div>
+        <div class="task-list">${done.map((i) => taskCard(i, u.id)).join('')}</div></section>` : ''}
+    </main>`;
+  }
+
+  function photoFieldHtml(name, src, label = 'Take or upload a photo') {
+    if (src) {
+      return `<div class="photo-preview"><img src="${src}" alt="Selected photo">
+        <div class="btn-row"><label class="btn sm" for="${name}">${icon('camera')}Retake</label>
+        <button type="button" class="btn sm ghost" data-action="remove-photo" data-target="${name}">${icon('x')}Remove</button></div></div>`;
+    }
+    return `<label class="photo-pick" for="${name}"><span class="cam">${icon('camera')}</span>
+      <b>${esc(label)}</b><span>Opens the camera on your phone. JPG or PNG.</span></label>`;
+  }
+
+  function viewReport() {
+    const p = S().project;
+    return `${header('narrow')}<main class="wrap narrow page">
+      <button class="back" data-action="home">${icon('back')}Back</button>
+      <div class="hello"><h1>Report an issue</h1><p>Describe what you see. The site manager gets it right away.</p></div>
+      <form class="form" data-form="report" novalidate>
+        <div class="field"><span class="label">Photo <span class="opt">(recommended)</span></span>
+          <div class="photo-field" data-photo-box="rp-photo">${photoFieldHtml('rp-photo', draftPhoto)}</div>
+          <input type="file" id="rp-photo" accept="image/*" capture="environment" data-photo="draft" class="sr-only">
+          <span class="photo-err form-error" data-err="rp-photo"></span></div>
+        <div class="field"><label for="rp-title">What’s the problem?</label>
+          <input type="text" id="rp-title" name="title" maxlength="80" placeholder="e.g. Window does not close" required></div>
+        <div class="field"><label for="rp-cat">Type</label>
+          <select id="rp-cat" name="category">${['Workmanship', 'Installation', 'Damage', 'Safety', 'Electrical', 'Plumbing', 'Other'].map((c) => `<option>${c}</option>`).join('')}</select></div>
+        <div class="field"><span class="label">Where is it?</span>
+          <div class="row">
+            <select id="rp-bldg" name="building" aria-label="Building">${p.buildings.map((b) => `<option value="${b}">Building ${b}</option>`).join('')}</select>
+            <select id="rp-floor" name="floor" aria-label="Floor">${p.floors.map((f) => `<option${f === 'Ground floor' ? ' selected' : ''}>${f}</option>`).join('')}</select>
+            <input type="text" id="rp-room" name="room" placeholder="Room, e.g. B-204" aria-label="Room">
+          </div>
+          <input type="text" id="rp-detail" name="detail" placeholder="Exact spot (optional), e.g. left window" aria-label="Exact spot"></div>
+        <div class="field"><label for="rp-desc">What happened?</label>
+          <textarea id="rp-desc" name="description" placeholder="What you can see. e.g. Gap of about 1 cm at the top of the window, you can feel a draught."></textarea></div>
+        <div class="field"><label for="rp-when">When did you first notice it?</label>
+          <input type="datetime-local" id="rp-when" name="observedAt" value="${nowLocalInput()}" max="${nowLocalInput()}">
+          <label class="check"><input type="checkbox" id="rp-when-unknown" name="observedUnknown" data-toggle="rp-when">Not sure</label></div>
+        <div class="field"><label for="rp-cause">Why do you think it happened? <span class="opt">(optional)</span></label>
+          <textarea id="rp-cause" name="cause" style="min-height:70px" placeholder="Only if you have an idea. The manager decides what to do."></textarea>
+          <label class="check"><input type="checkbox" id="rp-cause-unknown" name="causeUnknown" data-toggle="rp-cause">I don’t know</label></div>
+        <label class="check hazard-check"><input type="checkbox" id="rp-hazard" name="hazard">${icon('alert')}This is a safety risk for people on site</label>
+        <div class="form-error" role="alert"></div>
+        <button type="submit" class="btn primary block" style="min-height:54px;font-size:1.05rem">${icon('send')}Send to site manager</button>
+      </form></main>`;
+  }
+
+  function viewSent() {
+    const i = issueById(view.id);
+    const mgr = S().users.find((u) => u.role === 'manager');
+    return `${header('narrow')}<main class="wrap narrow page"><div class="panel sent">
+      <span class="tick">${icon('check')}</span>
+      <h1>Report sent</h1>
+      <span class="ticket">${i ? i.id : ''}</span>
+      <p class="muted">${esc(mgr ? mgr.name : 'The site manager')} can see it now on the manager dashboard. You can follow its status under “Issues I reported”.</p>
+      <div class="btn-row" style="width:100%;margin-top:6px">
+        <button class="btn" data-action="go-report">${icon('plus')}Report another</button>
+        <button class="btn primary" data-action="home">Back to my tasks</button></div>
+    </div></main>`;
+  }
+
+  function reqBlock(r, forManager) {
+    const by = userById(r.by);
+    const title = r.type === 'time' ? `More time · until ${H.fmtDay(r.proposedDate)}` : `${r.count} more ${r.count === 1 ? 'person' : 'people'}${r.trade ? ` · ${esc(r.trade)}` : ''}`;
+    const stateLabel = { pending: 'Waiting for answer', approved: 'Approved', declined: 'Declined', withdrawn: 'Closed with issue' }[r.status];
+    return `<div class="req ${r.status}">
+      <div class="req-head"><b>${icon(r.type === 'time' ? 'calendar' : 'users')} ${title}</b><span class="req-state ${r.status}">${stateLabel}</span></div>
+      <p class="quote">${esc(r.reason)}</p>
+      <span class="faint" style="font-size:.82rem">${forManager ? `${esc(by ? by.name : '')} · ` : ''}asked ${esc(ago(r.at))}</span>
+      ${r.status !== 'pending' && r.response ? `<p style="font-size:.92rem"><b>Manager:</b> ${esc(r.response)}</p>` : ''}
+    </div>`;
+  }
+
+  function timeline(i) {
+    const ev = [...i.events].reverse();
+    return `<ol class="timeline">${ev.map((e) => {
+      const u = userById(e.by);
+      return `<li class="t-${e.type}"><span class="dot"></span><div class="what">${esc(e.text)}</div>
+        ${e.note ? `<p class="quote">${esc(e.note)}</p>` : ''}
+        <div class="meta">${esc(u ? u.name : '')} · ${esc(fmtDT(e.at))}</div></li>`;
+    }).join('')}</ol>`;
+  }
+
+  function reportFacts(i) {
+    const rep = userById(i.reporterId);
+    return `<dl class="facts">
+      <dt>Where</dt><dd>${locLine(i.location)}${i.location.detail ? `<br><span class="muted">${esc(i.location.detail)}</span>` : ''}</dd>
+      <dt>Noticed</dt><dd>${i.observedAt ? esc(fmtDT(i.observedAt)) : '<span class="muted">Not sure</span>'}</dd>
+      <dt>Likely cause</dt><dd>${i.cause ? esc(i.cause) : '<span class="muted">Unknown</span>'}</dd>
+      <dt>Type</dt><dd>${esc(i.category)}</dd>
+      <dt>Reported by</dt><dd><span class="person">${avatar(rep, 'sm')}${esc(rep ? rep.name : '')}</span> <span class="faint">· ${esc(fmtDT(i.createdAt))}</span></dd>
+    </dl>`;
+  }
+
+  function viewTask() {
+    const u = me();
+    const i = issueById(view.id);
+    if (!i || !isWorkerIssue(i, u.id)) return `${header('narrow')}<main class="wrap narrow page"><button class="back" data-action="home">${icon('back')}Back</button><div class="empty">This task isn’t assigned to you.</div></main>`;
+    const lead = i.assigneeId === u.id;
+    const mgr = (i.events.find((e) => e.type === 'assigned') || {}).by;
+    const mgrU = userById(mgr) || S().users.find((x) => x.role === 'manager');
+    const late = isLate(i);
+    const reqs = i.requests || [];
+    const hasTime = pending(i).some((r) => r.type === 'time');
+    const hasWorkers = pending(i).some((r) => r.type === 'workers');
+    const src = photoSrc(i.photo);
+    const team = [i.assigneeId, ...(i.helperIds || [])].map(userById);
+    const open = H.ACTIVE.includes(i.status);
+
+    let primary = '';
+    if (lead && (i.status === 'assigned' || i.status === 'rework')) primary = `<button class="btn primary block" data-action="start" data-id="${i.id}" style="min-height:54px">${icon('play')}${i.status === 'rework' ? 'Start the rework' : 'Start work'}</button>`;
+    else if (lead && i.status === 'in_progress') primary = `<button class="btn primary block" data-action="done-sheet" data-id="${i.id}" style="min-height:54px">${icon('check')}Mark as done</button>`;
+
+    return `${header('narrow')}<main class="wrap narrow page" style="padding-bottom:16px">
+      <button class="back" data-action="home">${icon('back')}My tasks</button>
+      <div class="title-block">
+        <div class="badges"><span class="mono faint">${i.id}</span>${badge(i.status)}${late ? '<span class="badge overdue">Overdue</span>' : ''}${i.hazard ? '<span class="badge hazard">Safety risk</span>' : ''}</div>
+        <h1>${esc(i.title)}</h1>
+        <div class="badges">${dueTag(i)}${prioTag(i.priority)}</div>
+      </div>
+      ${i.status === 'rework' ? `<div class="callout rework">${icon('alert')}<div><b>Sent back by ${esc(first(mgrU))}</b><p>${esc(i.reworkReason)}</p></div></div>` : ''}
+      ${i.status === 'review' ? `<div class="callout review">${icon('clock')}<div><b>Waiting for the manager to check your work.</b><p class="muted">You’ll see here if it’s closed or sent back.</p></div></div>` : ''}
+      ${i.status === 'closed' ? `<div class="callout closed">${icon('check')}<div><b>Checked and closed${i.closedAt ? ` on ${esc(fmtDT(i.closedAt))}` : ''}.</b></div></div>` : ''}
+      ${late ? `<div class="callout late">${icon('alert')}<div><b>This task is past its deadline.</b><p>If you need more time, ask the manager below.</p></div></div>` : ''}
+      <div class="instructions"><span class="from">What to do · from ${esc(mgrU ? mgrU.name : 'manager')}</span><p>${esc(i.instructions)}</p></div>
+      <div class="detail-photo">${src ? `<img src="${src}" alt="Photo of the issue">` : `<div class="no-photo">${icon('image')}No photo</div>`}</div>
+      <section class="section"><h2 class="subhead">The report</h2>
+        <p class="report-text">${esc(i.description)}</p>${reportFacts(i)}</section>
+      <section class="section"><h2 class="subhead">Team</h2><div class="team">${team.map((t, k) => `<span class="person">${avatar(t, 'sm')}<b>${esc(t.name)}</b><span class="faint">· ${k === 0 ? 'Responsible' : 'Helping'}${t.id === u.id ? ' (you)' : ''}</span></span>`).join('')}</div></section>
+      ${reqs.length ? `<section class="section"><h2 class="subhead">Requests to the manager</h2>${reqs.slice().reverse().map((r) => reqBlock(r, false)).join('')}</section>` : ''}
+      ${i.completion && i.status !== 'rework' ? `<section class="section"><h2 class="subhead">Your completion note</h2><p class="quote">${esc(i.completion.note)}</p>${photoSrc(i.completion.photo) ? `<div class="detail-photo"><img src="${photoSrc(i.completion.photo)}" alt="Photo after the repair"></div>` : ''}</section>` : ''}
+      <section class="section"><h2 class="subhead">Activity</h2>${timeline(i)}</section>
+    </main>
+    ${open ? `<div class="action-bar"><div class="wrap narrow inner">
+      ${primary}
+      <div class="minor">
+        <button class="btn" data-action="note-sheet" data-id="${i.id}">${icon('note')}Add update</button>
+        <button class="btn" data-action="time-sheet" data-id="${i.id}" ${hasTime ? 'disabled' : ''}>${icon('calendar')}${hasTime ? 'Time asked' : 'Need more time'}</button>
+        <button class="btn" data-action="workers-sheet" data-id="${i.id}" ${hasWorkers ? 'disabled' : ''}>${icon('users')}${hasWorkers ? 'Help asked' : 'Need more workers'}</button>
+      </div></div></div>` : ''}`;
+  }
+
+  /* =====================================================================
+     MANAGER
+     ===================================================================== */
+  function managerCounts() {
+    const is = S().issues;
+    return {
+      new: is.filter((i) => i.status === 'reported').length,
+      active: is.filter((i) => H.ACTIVE.includes(i.status)).length,
+      review: is.filter((i) => i.status === 'review').length,
+      late: is.filter(isLate).length,
+      req: is.reduce((n, i) => n + pending(i).length, 0)
+    };
+  }
+  const FILTERS = [
+    ['open', 'All open', (i) => i.status !== 'closed'],
+    ['new', 'New', (i) => i.status === 'reported'],
+    ['active', 'In progress', (i) => H.ACTIVE.includes(i.status)],
+    ['review', 'To check', (i) => i.status === 'review'],
+    ['late', 'Overdue', (i) => isLate(i)],
+    ['req', 'Requests', (i) => pending(i).length > 0],
+    ['closed', 'Closed', (i) => i.status === 'closed'],
+    ['all', 'All', () => true]
+  ];
+
+  function todoItems() {
+    const items = [];
+    S().issues.forEach((i) => {
+      pending(i).forEach((r) => {
+        const by = userById(r.by);
+        items.push({ w: 1, at: r.at, id: i.id, cls: 'i-req', ic: r.type === 'time' ? 'calendar' : 'users',
+          t: r.type === 'time' ? `${by.name} needs more time` : `${by.name} needs ${r.count} more ${r.count === 1 ? 'person' : 'people'}`,
+          s: `${i.id} · ${i.title}` });
+      });
+      if (i.status === 'reported') items.push({ w: i.hazard ? 0 : 2, at: i.createdAt, id: i.id, cls: 'i-new', ic: i.hazard ? 'alert' : 'inbox',
+        t: `${i.hazard ? 'Safety risk: ' : 'New: '}${i.title}`, s: `${i.id} · ${locText(i.location)} · from ${userById(i.reporterId).name}` });
+      if (i.status === 'review') items.push({ w: 3, at: i.completion ? i.completion.at : i.createdAt, id: i.id, cls: 'i-review', ic: 'check',
+        t: `Check work: ${i.title}`, s: `${i.id} · ${userById(i.assigneeId).name} marked it as done` });
+      if (isLate(i) && !pending(i).some((r) => r.type === 'time')) items.push({ w: 4, at: i.dueDate, id: i.id, cls: 'i-late', ic: 'clock',
+        t: `Overdue: ${i.title}`, s: `${i.id} · ${userById(i.assigneeId).name} · ${dueInfo(i).text}` });
+    });
+    return items.sort((a, b) => a.w - b.w || String(b.at).localeCompare(String(a.at)));
+  }
+
+  function viewManagerHome() {
+    const c = managerCounts();
+    const todo = todoItems();
+    const workers = S().users.filter((u) => u.role === 'worker');
+    const f = FILTERS.find((x) => x[0] === mgrFilter) || FILTERS[0];
+    const q = mgrSearch.trim().toLowerCase();
+    const list = S().issues.filter(f[2]).filter((i) => !q || [i.id, i.title, i.location.room, i.location.building, (userById(i.assigneeId) || {}).name].join(' ').toLowerCase().includes(q))
+      .sort((a, b) => (H.STATUS[a.status].order - H.STATUS[b.status].order) || (isLate(b) - isLate(a)) || b.createdAt.localeCompare(a.createdAt));
+    const kpi = (key, cls, n, label) => `<button class="kpi ${cls}" data-action="filter" data-f="${key}" aria-pressed="${mgrFilter === key}"><b>${n}</b><span>${label}</span></button>`;
+
+    return `${header('wide')}<main class="wrap wide page">
+      <div class="mgr-head"><div><h1>Site overview</h1><p>${esc(longDate())} · ${esc(S().project.name)}</p></div></div>
+      <div class="kpis">
+        ${kpi('new', 'k-new', c.new, 'New reports')}
+        ${kpi('active', 'k-active', c.active, 'In progress')}
+        ${kpi('review', 'k-review', c.review, 'Ready to check')}
+        ${kpi('late', 'k-late', c.late, 'Overdue')}
+        ${kpi('req', 'k-req', c.req, 'Open requests')}
+      </div>
+      <div class="mgr-grid">
+        <section class="section"><div class="section-head"><h2>Needs your decision</h2><span class="count">${todo.length}</span></div>
+          ${todo.length ? `<div class="panel todo">${todo.map((t) => `<button class="todo-item" data-action="open-issue" data-id="${t.id}">
+            <span class="todo-ico ${t.cls}">${icon(t.ic)}</span><span class="txt"><b>${esc(t.t)}</b><span>${esc(t.s)}</span></span>
+            <span class="when">${t.cls === 'i-late' ? '' : esc(ago(t.at))}</span></button>`).join('')}</div>`
+            : '<div class="empty">All caught up. New reports and requests from the site will appear here.</div>'}
+        </section>
+        <section class="section"><div class="section-head"><h2>Crew today</h2><span class="count">${workers.length}</span></div>
+          <div class="panel crew">${workers.map((w) => {
+            const ts = S().issues.filter((i) => isWorkerIssue(i, w.id) && H.ACTIVE.includes(i.status));
+            const lt = ts.filter(isLate).length;
+            return `<div class="crew-row">${avatar(w, 'sm')}<span class="nm"><b>${esc(w.name)}</b><span>${esc(w.title)}</span></span>
+              <span class="load">${ts.length} open${lt ? ` · <span class="late">${lt} late</span>` : ''}</span></div>`;
+          }).join('')}</div></section>
+      </div>
+      <section class="section" id="all-issues">
+        <div class="section-head"><h2>All issues</h2></div>
+        <div class="toolbar">
+          <div class="tabs" role="group" aria-label="Filter issues">${FILTERS.map(([k, l, fn]) => `<button class="tab" data-action="filter" data-f="${k}" aria-pressed="${mgrFilter === k}">${l}<span class="n">${S().issues.filter(fn).length}</span></button>`).join('')}</div>
+          <label class="search">${icon('search')}<span class="sr-only">Search issues</span><input type="text" id="mgr-search" placeholder="Search ID, title, room, worker" value="${esc(mgrSearch)}" data-search></label>
+        </div>
+        <div class="panel table" id="issue-table">${issueTable(list)}</div>
+      </section>
+    </main>`;
+  }
+
+  function issueTable(list) {
+    if (!list.length) return '<div class="empty" style="border:0">No issues match this filter.</div>';
+    return `<div class="trow head"><span>ID</span><span></span><span>Issue</span><span>Reported</span><span>Assigned to</span><span>Deadline</span><span>Status</span></div>
+      ${list.map((i) => {
+        const a = userById(i.assigneeId); const r = userById(i.reporterId); const src = photoSrc(i.photo); const reqs = pending(i).length;
+        const st = `${isLate(i) ? '<span class="badge overdue">Overdue</span>' : badge(i.status)}`;
+        return `<button class="trow" data-action="open-issue" data-id="${i.id}">
+          <span class="cell mono c-id">${i.id}</span>
+          <span class="c-img">${src ? `<img class="thumb" src="${src}" alt="">` : `<span class="thumb" style="display:grid;place-items:center;color:var(--ink-3)">${icon('image')}</span>`}</span>
+          <span class="ttl"><b>${i.hazard ? `${icon('alert')} ` : ''}${esc(i.title)}</b><span>${locLine(i.location)}</span></span>
+          <span class="cell small c-rep">${esc(r ? r.name : '')}<br>${esc(ago(i.createdAt))}</span>
+          <span class="cell c-asg">${a ? `<span class="person">${avatar(a, 'sm')}${esc(a.name)}</span>` : '<span class="faint">Not assigned</span>'}</span>
+          <span class="cell c-due">${i.dueDate ? `${dueTag(i) || esc(H.fmtDay(i.dueDate))}` : '<span class="faint">—</span>'}</span>
+          <span class="cell c-st">${st}${reqs ? `<span class="chip req">${reqs} request${reqs > 1 ? 's' : ''}</span>` : ''}</span>
+          <span class="c-mob" style="display:none"><span class="mono faint">${i.id}</span>${st}${a ? `<span class="faint">${esc(first(a))}</span>` : ''}${dueTag(i)}${reqs ? `<span class="chip req">${reqs} request</span>` : ''}</span>
+        </button>`;
+      }).join('')}`;
+  }
+
+  function workerOptions(selected, excludeIds = []) {
+    const t = today();
+    return S().users.filter((u) => u.role === 'worker' && !excludeIds.includes(u.id)).map((w) => {
+      const n = S().issues.filter((i) => isWorkerIssue(i, w.id) && H.ACTIVE.includes(i.status)).length;
+      return `<option value="${w.id}"${w.id === selected ? ' selected' : ''}>${esc(w.name)} · ${esc(w.title)} (${n} open)</option>`;
+    }).join('');
+  }
+
+  function viewManagerIssue() {
+    const i = issueById(view.id);
+    if (!i) return `${header('wide')}<main class="wrap wide page"><button class="back" data-action="home">${icon('back')}Dashboard</button><div class="empty">Issue not found.</div></main>`;
+    const src = photoSrc(i.photo);
+    const late = isLate(i);
+    return `${header('wide')}<main class="wrap wide page">
+      <button class="back" data-action="home">${icon('back')}Dashboard</button>
+      <div class="title-block">
+        <div class="badges"><span class="mono faint">${i.id}</span>${badge(i.status)}${late ? '<span class="badge overdue">Overdue</span>' : ''}${i.hazard ? '<span class="badge hazard">Safety risk</span>' : ''}</div>
+        <h1>${esc(i.title)}</h1>
+        <div class="badges"><span class="loc">${icon('pin')}${locLine(i.location)}</span>${dueTag(i)}${prioTag(i.priority)}</div>
+      </div>
+      <div class="detail-grid">
+        <div class="stack">
+          <div class="detail-photo">${src ? `<img src="${src}" alt="Photo of the issue">` : `<div class="no-photo">${icon('image')}No photo attached</div>`}</div>
+          <section class="panel panel-pad stack"><h2 class="subhead">Original report</h2>
+            <p class="report-text">${esc(i.description)}</p>${reportFacts(i)}</section>
+          ${i.completion ? `<section class="panel panel-pad stack"><h2 class="subhead">${i.status === 'rework' ? 'Previous completion note' : 'Completion note from the worker'}</h2>
+            <p class="quote">${esc(i.completion.note)}</p>
+            <span class="faint" style="font-size:.85rem">${esc(userById(i.completion.by).name)} · ${esc(fmtDT(i.completion.at))}</span>
+            ${photoSrc(i.completion.photo) ? `<div class="detail-photo"><img src="${photoSrc(i.completion.photo)}" alt="Photo after the repair"></div>` : ''}</section>` : ''}
+          <section class="panel panel-pad stack"><h2 class="subhead">Activity</h2>${timeline(i)}</section>
+        </div>
+        <aside class="stack side">${i.status === 'reported' ? assignPanel(i) : followUpPanel(i)}</aside>
+      </div>
+    </main>`;
+  }
+
+  function assignPanel(i) {
+    const t = today();
+    const def = i.hazard ? t : H.addDays(t, 2);
+    return `<form class="form-card" data-form="assign" data-id="${i.id}" novalidate>
+      <div><h2>Assign the repair</h2><p class="muted" style="font-size:.92rem">The worker sees the task on their dashboard as soon as you save.</p></div>
+      <div class="field"><label for="as-worker">Who fixes it?</label>
+        <select id="as-worker" name="assigneeId"><option value="">Choose a worker</option>${workerOptions(null)}</select></div>
+      <div class="field"><span class="label">Priority</span>
+        <div class="seg">${['low', 'normal', 'high', 'urgent'].map((p) => `<label><input type="radio" name="priority" value="${p}"${p === (i.hazard ? 'urgent' : 'normal') ? ' checked' : ''}>${H.PRIORITY[p]}</label>`).join('')}</div></div>
+      <div class="field"><label for="as-due">Deadline</label>
+        <input type="date" id="as-due" name="dueDate" min="${t}" value="${def}"></div>
+      <div class="field"><label for="as-ins">Instructions for the worker</label>
+        <textarea id="as-ins" name="instructions" placeholder="e.g. Check the hinges and adjust the window fitting. Replace the hinge if it is bent."></textarea></div>
+      <div class="form-error" role="alert"></div>
+      <button class="btn primary block" type="submit">${icon('send')}Assign and send to worker</button>
+    </form>`;
+  }
+
+  function followUpPanel(i) {
+    const t = today();
+    const a = userById(i.assigneeId);
+    const helpers = (i.helperIds || []).map(userById);
+    const reqs = i.requests || [];
+    const pend = reqs.filter((r) => r.status === 'pending');
+    const done = reqs.filter((r) => r.status !== 'pending');
+    const open = H.ACTIVE.includes(i.status);
+
+    const statusLine = {
+      assigned: `${a.name} hasn’t started yet.`,
+      in_progress: `${a.name} is working on it.`,
+      rework: `Sent back to ${a.name} for rework.`,
+      review: `${a.name} says the work is done. Check it and decide.`,
+      closed: `Closed on ${i.closedAt ? fmtDT(i.closedAt) : ''}.`
+    }[i.status];
+
+    const reqForms = pend.map((r) => {
+      const by = userById(r.by);
+      if (r.type === 'time') {
+        return `<form class="form-card" data-form="resolve" data-id="${i.id}" data-req="${r.id}" data-type="time" novalidate style="border-color:color-mix(in srgb,var(--accent) 70%,var(--line))">
+          <div class="req-head"><h2>${icon('calendar')} ${esc(first(by))} needs more time</h2><span class="faint" style="font-size:.82rem">${esc(ago(r.at))}</span></div>
+          <p class="quote">${esc(r.reason)}</p>
+          <div class="split"><div class="kv"><span class="subhead">Current deadline</span><b>${esc(H.fmtDay(i.dueDate))}</b></div>
+            <div class="kv"><span class="subhead">Asked for</span><b>${esc(H.fmtDay(r.proposedDate))}</b></div></div>
+          <div class="field"><label for="rq-date-${r.id}">New deadline</label><input type="date" id="rq-date-${r.id}" name="newDate" min="${t}" value="${r.proposedDate}"></div>
+          <div class="field"><label for="rq-msg-${r.id}">Message to ${esc(first(by))} <span class="opt">(optional)</span></label><input type="text" id="rq-msg-${r.id}" name="response" placeholder="e.g. OK, but keep the water shut off."></div>
+          <div class="form-error" role="alert"></div>
+          <div class="btn-row"><button class="btn primary" type="submit" name="decision" value="approve">${icon('check')}Approve new deadline</button>
+            <button class="btn" type="submit" name="decision" value="decline">Decline</button></div></form>`;
+      }
+      const team = [i.assigneeId, ...(i.helperIds || [])];
+      const cands = S().users.filter((u) => u.role === 'worker' && !team.includes(u.id));
+      return `<form class="form-card" data-form="resolve" data-id="${i.id}" data-req="${r.id}" data-type="workers" novalidate style="border-color:color-mix(in srgb,var(--accent) 70%,var(--line))">
+        <div class="req-head"><h2>${icon('users')} ${esc(first(by))} needs ${r.count} more ${r.count === 1 ? 'person' : 'people'}</h2><span class="faint" style="font-size:.82rem">${esc(ago(r.at))}</span></div>
+        <p class="quote">${esc(r.reason)}</p>
+        ${r.trade ? `<p style="font-size:.92rem"><b>Trade needed:</b> ${esc(r.trade)}</p>` : ''}
+        <div class="field"><span class="label">Add to the task</span><div class="worker-opt">
+          ${cands.map((c) => {
+            const n = S().issues.filter((x) => isWorkerIssue(x, c.id) && H.ACTIVE.includes(x.status)).length;
+            return `<label class="check"><input type="checkbox" name="helperIds" value="${c.id}">${avatar(c, 'sm')}<span>${esc(c.name)} <span class="faint">· ${esc(c.title)} · ${n} open</span></span></label>`;
+          }).join('')}</div></div>
+        <div class="field"><label for="rq-msg-${r.id}">Message to ${esc(first(by))} <span class="opt">(optional)</span></label><input type="text" id="rq-msg-${r.id}" name="response" placeholder="e.g. Ayşe joins you after lunch."></div>
+        <div class="form-error" role="alert"></div>
+        <div class="btn-row"><button class="btn primary" type="submit" name="decision" value="approve">${icon('users')}Add to task</button>
+          <button class="btn" type="submit" name="decision" value="decline">Decline</button></div></form>`;
+    }).join('');
+
+    const review = i.status === 'review' ? `<form class="form-card" data-form="review" data-id="${i.id}" novalidate style="border-color:var(--st-review)">
+      <div><h2>Check the work</h2><p class="muted" style="font-size:.92rem">Read ${esc(first(a))}’s note on the left, check on site, then decide.</p></div>
+      <div class="field"><label for="rv-note">Comment <span class="opt">(required if you send it back)</span></label>
+        <textarea id="rv-note" name="note" style="min-height:76px" placeholder="e.g. The gap at the top is still there."></textarea></div>
+      <div class="form-error" role="alert"></div>
+      <div class="btn-row"><button class="btn primary" type="submit" name="decision" value="close">${icon('check')}Approve and close</button>
+        <button class="btn danger" type="submit" name="decision" value="return">Send back for rework</button></div></form>` : '';
+
+    const adjust = open ? `<details class="panel panel-pad adjust"><summary>${icon('chev')}Change worker, deadline or instructions</summary>
+      <form class="form" data-form="adjust" data-id="${i.id}" novalidate style="margin-top:14px">
+        <div class="field"><label for="ad-worker">Responsible worker</label><select id="ad-worker" name="assigneeId">${workerOptions(i.assigneeId)}</select></div>
+        <div class="field"><label for="ad-due">Deadline</label><input type="date" id="ad-due" name="dueDate" min="${t}" value="${i.dueDate && i.dueDate >= t ? i.dueDate : ''}"></div>
+        <div class="field"><label for="ad-ins">Instructions</label><textarea id="ad-ins" name="instructions">${esc(i.instructions)}</textarea></div>
+        <div class="form-error" role="alert"></div>
+        <button class="btn" type="submit">Save changes</button></form></details>` : '';
+
+    return `<section class="panel panel-pad stack">
+        <h2 class="subhead">Follow-up</h2>
+        <p style="font-weight:600">${esc(statusLine)}</p>
+        <dl class="facts">
+          <dt>Responsible</dt><dd><span class="person">${avatar(a, 'sm')}${esc(a.name)}</span></dd>
+          ${helpers.length ? `<dt>Helping</dt><dd class="team">${helpers.map((h) => `<span class="person">${avatar(h, 'sm')}${esc(h.name)}</span>`).join('')}</dd>` : ''}
+          <dt>Deadline</dt><dd>${esc(H.fmtDay(i.dueDate))} ${dueTag(i)}</dd>
+          <dt>Priority</dt><dd>${prioTag(i.priority)}</dd>
+        </dl>
+        <div class="instructions"><span class="from">Your instructions</span><p>${esc(i.instructions)}</p></div>
+        ${i.status === 'rework' && i.reworkReason ? `<div class="callout rework">${icon('alert')}<div><b>Reason sent back</b><p>${esc(i.reworkReason)}</p></div></div>` : ''}
+      </section>
+      ${reqForms}
+      ${review}
+      ${adjust}
+      ${done.length ? `<section class="stack"><h2 class="subhead">Earlier requests</h2>${done.map((r) => reqBlock(r, true)).join('')}</section>` : ''}`;
+  }
+
+  /* =====================================================================
+     SHEETS (worker actions)
+     ===================================================================== */
+  function sheetDone(id) {
+    openSheet('Mark as done', `<form class="form" data-form="done" data-id="${id}" novalidate>
+      <p class="muted">The manager will check your work and close the issue or send it back.</p>
+      <div class="field"><label for="dn-note">What did you do?</label>
+        <textarea id="dn-note" name="note" placeholder="e.g. Replaced the top hinge and adjusted the sash. Window closes and seals properly."></textarea></div>
+      <div class="field"><span class="label">Photo after the repair <span class="opt">(optional)</span></span>
+        <div class="photo-field" data-photo-box="dn-photo">${photoFieldHtml('dn-photo', null, 'Add an after photo')}</div>
+        <input type="file" id="dn-photo" accept="image/*" capture="environment" data-photo="done" class="sr-only">
+        <span class="photo-err form-error" data-err="dn-photo"></span></div>
+      <div class="form-error" role="alert"></div>
+      <button class="btn primary block" type="submit">${icon('send')}Send for review</button></form>`);
+  }
+  function sheetNote(id) {
+    openSheet('Add an update', `<form class="form" data-form="note" data-id="${id}" novalidate>
+      <div class="field"><label for="nt-text">What’s the latest?</label>
+        <textarea id="nt-text" name="text" placeholder="e.g. Waiting for the hinge from the container. Back on it at 2 pm."></textarea></div>
+      <div class="form-error" role="alert"></div>
+      <button class="btn primary block" type="submit">Post update</button></form>`);
+  }
+  function sheetTime(id) {
+    const i = issueById(id);
+    const min = H.addDays(i.dueDate && i.dueDate >= today() ? i.dueDate : today(), 1);
+    openSheet('Ask for more time', `<form class="form" data-form="time" data-id="${id}" novalidate>
+      <p class="muted">Current deadline: <b>${esc(H.fmtDay(i.dueDate))}</b>. The manager decides if it can move.</p>
+      <div class="field"><label for="tm-date">I need until</label><input type="date" id="tm-date" name="proposedDate" min="${min}" value="${min}"></div>
+      <div class="field"><label for="tm-reason">Why?</label><textarea id="tm-reason" name="reason" placeholder="e.g. Replacement part arrives on Friday."></textarea></div>
+      <div class="form-error" role="alert"></div>
+      <button class="btn primary block" type="submit">${icon('send')}Send request to manager</button></form>`);
+  }
+  function sheetWorkers(id) {
+    openSheet('Ask for more workers', `<form class="form" data-form="workers" data-id="${id}" novalidate>
+      <p class="muted">Your request goes to the manager, who decides who joins you.</p>
+      <div class="row">
+        <div class="field"><label for="wk-count">How many people?</label><select id="wk-count" name="count">${[1, 2, 3, 4, 5].map((n) => `<option>${n}</option>`).join('')}</select></div>
+        <div class="field"><label for="wk-trade">Which trade? <span class="opt">(optional)</span></label>
+          <select id="wk-trade" name="trade"><option value="">Anyone</option>${['Window & door fitter', 'Electrician', 'Plasterer', 'Plumber', 'General site work'].map((t) => `<option>${t}</option>`).join('')}</select></div>
+      </div>
+      <div class="field"><label for="wk-reason">Why?</label><textarea id="wk-reason" name="reason" placeholder="e.g. The radiator has to be lifted off the wall. I can’t do it alone."></textarea></div>
+      <div class="form-error" role="alert"></div>
+      <button class="btn primary block" type="submit">${icon('send')}Send request to manager</button></form>`);
+  }
+  function sheetMenu() {
+    const u = me();
+    openSheet('Account', `<div class="panel panel-pad" style="display:flex;gap:12px;align-items:center">${avatar(u, 'lg')}<div><b>${esc(u.name)}</b><div class="muted">${esc(u.title)} · ${u.role === 'manager' ? 'Manager' : 'Worker'} view</div><div class="mono faint">${esc(u.username)}</div></div></div>
+      <button class="btn block" data-action="logout">${icon('logout')}Switch user</button>
+      <div class="panel panel-pad stack"><div><b>Reset demo data</b><p class="muted" style="font-size:.9rem">Puts all issues back to how the demo started. Anything you added is removed.</p></div>
+        <button class="btn danger" data-action="reset-confirm">${icon('reset')}Reset demo data</button></div>
+      <p class="faint" style="font-size:.84rem">SiteProof course prototype · fictional data · stored only in this browser${store.isPersisted() ? '' : ' (storage is blocked here, so changes last until you close the page)'}.</p>`);
+  }
+
+  /* ---------- photo handling ---------- */
+  function readPhoto(file) {
+    return new Promise((resolve, reject) => {
+      if (!file) return reject(new Error('No photo selected.'));
+      if (file.type && !file.type.startsWith('image/')) return reject(new Error('That file isn’t a photo. Choose a JPG or PNG.'));
+      const fr = new FileReader();
+      fr.onerror = () => reject(new Error('Couldn’t read the photo. Try another one.'));
+      fr.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const max = 1280;
+          const sc = Math.min(1, max / Math.max(img.width, img.height));
+          const c = document.createElement('canvas');
+          c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc);
+          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+          resolve(c.toDataURL('image/jpeg', 0.72));
+        };
+        img.onerror = () => reject(new Error('This browser can’t open that photo format. Try a JPG or PNG.'));
+        img.src = fr.result;
+      };
+      fr.readAsDataURL(file);
+    });
+  }
+
+  /* =====================================================================
+     RENDER
+     ===================================================================== */
+  function render() {
+    const u = me();
+    if (!u && view.name !== 'login') view = { name: 'login' };
+    let html = '';
+    switch (view.name) {
+      case 'login': html = viewLogin(); break;
+      case 'w-home': html = viewWorkerHome(); break;
+      case 'w-report': html = viewReport(); break;
+      case 'w-sent': html = viewSent(); break;
+      case 'w-task': html = viewTask(); break;
+      case 'm-home': html = viewManagerHome(); break;
+      case 'm-issue': html = viewManagerIssue(); break;
+      default: html = viewLogin();
+    }
+    appEl.innerHTML = html;
+    document.title = 'SiteProof';
+  }
+
+  /* ---------- events ---------- */
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-action]');
+    if (!el) return;
+    const a = el.dataset.action;
+    const id = el.dataset.id;
+    if (a === 'close-sheet-bg' && e.target !== el) return;
+    switch (a) {
+      case 'home': home(); break;
+      case 'login-role': loginRole = el.dataset.role; render(); break;
+      case 'pick-acct': {
+        document.getElementById('lg-user').value = el.dataset.user;
+        document.getElementById('lg-pass').value = 'demo1234';
+        document.querySelectorAll('.acct').forEach((x) => x.classList.toggle('sel', x === el));
+        break;
+      }
+      case 'menu': sheetMenu(); break;
+      case 'close-sheet': case 'close-sheet-bg': closeSheet(); break;
+      case 'logout': store.logout(); loginRole = 'worker'; go('login'); break;
+      case 'reset-confirm':
+        el.outerHTML = `<div class="btn-row"><button class="btn danger" data-action="reset">Yes, reset everything</button><button class="btn" data-action="close-sheet">Cancel</button></div>`;
+        break;
+      case 'reset': store.reset(); draftPhoto = null; mgrFilter = 'open'; mgrSearch = ''; closeSheet(); home(); toast('Demo data reset'); break;
+      case 'go-report': draftPhoto = null; go('w-report'); break;
+      case 'open-task': go('w-task', { id }); break;
+      case 'open-issue': go('m-issue', { id }); break;
+      case 'filter':
+        mgrFilter = el.dataset.f; render();
+        if (el.classList.contains('kpi')) document.getElementById('all-issues').scrollIntoView({ behavior: 'smooth' });
+        break;
+      case 'start': {
+        const err = act(() => store.startWork(me().id, id), 'Work started. The manager can see it.');
+        if (err) toast(err, 'warn'); else render();
+        break;
+      }
+      case 'done-sheet': sheetDone(id); break;
+      case 'note-sheet': sheetNote(id); break;
+      case 'time-sheet': sheetTime(id); break;
+      case 'workers-sheet': sheetWorkers(id); break;
+      case 'remove-photo': {
+        const target = el.dataset.target;
+        if (target === 'rp-photo') draftPhoto = null; else donePhoto = null;
+        const box = document.querySelector(`[data-photo-box="${target}"]`);
+        if (box) box.innerHTML = photoFieldHtml(target, null, target === 'rp-photo' ? undefined : 'Add an after photo');
+        const inp = document.getElementById(target); if (inp) inp.value = '';
+        break;
+      }
+    }
+  });
+
+  document.addEventListener('change', (e) => {
+    const t = e.target;
+    if (t.matches('[data-toggle]')) {
+      const other = document.getElementById(t.dataset.toggle);
+      if (other) other.disabled = t.checked;
+    }
+    if (t.matches('[data-photo]')) {
+      const errEl = document.querySelector(`[data-err="${t.id}"]`);
+      if (errEl) errEl.textContent = '';
+      const file = t.files && t.files[0];
+      if (!file) return;
+      readPhoto(file).then((src) => {
+        if (t.dataset.photo === 'draft') draftPhoto = src; else donePhoto = src;
+        const box = document.querySelector(`[data-photo-box="${t.id}"]`);
+        if (box) box.innerHTML = photoFieldHtml(t.id, src);
+      }).catch((err) => { if (errEl) errEl.textContent = err.message; else toast(err.message, 'warn'); });
+    }
+  });
+
+  document.addEventListener('input', (e) => {
+    if (e.target.matches('[data-search]')) {
+      mgrSearch = e.target.value;
+      const f = FILTERS.find((x) => x[0] === mgrFilter) || FILTERS[0];
+      const q = mgrSearch.trim().toLowerCase();
+      const list = S().issues.filter(f[2]).filter((i) => !q || [i.id, i.title, i.location.room, i.location.building, (userById(i.assigneeId) || {}).name].join(' ').toLowerCase().includes(q))
+        .sort((a, b) => (H.STATUS[a.status].order - H.STATUS[b.status].order) || b.createdAt.localeCompare(a.createdAt));
+      document.getElementById('issue-table').innerHTML = issueTable(list);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && sheetRoot.innerHTML) closeSheet(); });
+
+  document.addEventListener('submit', (e) => {
+    const f = e.target.closest('form[data-form]');
+    if (!f) return;
+    e.preventDefault();
+    const fd = new FormData(f);
+    const v = (k) => (fd.get(k) || '').toString();
+    const id = f.dataset.id;
+    const decision = e.submitter ? e.submitter.value : '';
+    const u = me();
+    let err = null;
+
+    switch (f.dataset.form) {
+      case 'login': {
+        const name = v('username').trim().toLowerCase();
+        const acct = S().users.find((x) => x.username === name);
+        if (!name) err = 'Enter your username, or tap a demo account below.';
+        else if (!acct) err = 'No demo account with that username. Tap one of the accounts below.';
+        else if (acct.role !== loginRole) err = `${acct.name} is a ${acct.role}. Switch to “${acct.role === 'manager' ? 'Manager' : 'Worker'}” above.`;
+        else if (!v('password')) err = 'Enter a password. Any password works in the demo.';
+        if (!err) { store.login(acct.id); home(); return; }
+        break;
+      }
+      case 'report': {
+        let created = null;
+        err = act(() => {
+          const r = store.createIssue(u.id, {
+            title: v('title'), category: v('category'), building: v('building'), floor: v('floor'), room: v('room'), detail: v('detail'),
+            description: v('description'), observedAt: v('observedAt'), observedUnknown: !!fd.get('observedUnknown'),
+            cause: v('cause'), causeUnknown: !!fd.get('causeUnknown'), hazard: !!fd.get('hazard'), photo: draftPhoto
+          });
+          created = r.issue; return r;
+        });
+        if (!err) { draftPhoto = null; go('w-sent', { id: created.id }); return; }
+        break;
+      }
+      case 'done':
+        err = act(() => store.submitForReview(u.id, id, { note: v('note'), photo: donePhoto }), 'Sent to the manager for review');
+        if (!err) { closeSheet(); render(); window.scrollTo(0, 0); return; }
+        break;
+      case 'note':
+        err = act(() => store.addNote(u.id, id, v('text')), 'Update posted');
+        if (!err) { closeSheet(); render(); return; }
+        break;
+      case 'time':
+        err = act(() => store.requestTime(u.id, id, { proposedDate: v('proposedDate'), reason: v('reason') }), 'Request sent to the manager');
+        if (!err) { closeSheet(); render(); return; }
+        break;
+      case 'workers':
+        err = act(() => store.requestWorkers(u.id, id, { count: v('count'), trade: v('trade'), reason: v('reason') }), 'Request sent to the manager');
+        if (!err) { closeSheet(); render(); return; }
+        break;
+      case 'assign': {
+        const w = userById(v('assigneeId'));
+        err = act(() => store.assignIssue(u.id, id, { assigneeId: v('assigneeId'), priority: v('priority'), dueDate: v('dueDate'), instructions: v('instructions') }),
+          w ? `Assigned to ${w.name}` : '');
+        if (!err) { render(); window.scrollTo(0, 0); return; }
+        break;
+      }
+      case 'adjust':
+        err = act(() => store.updateAssignment(u.id, id, { assigneeId: v('assigneeId'), dueDate: v('dueDate'), instructions: v('instructions') }), 'Changes saved');
+        if (!err) { render(); return; }
+        break;
+      case 'resolve': {
+        if (!decision) { err = 'Choose approve or decline.'; break; }
+        const helperIds = fd.getAll('helperIds').map(String);
+        err = act(() => store.resolveRequest(u.id, id, f.dataset.req, { decision, newDate: v('newDate'), helperIds, response: v('response') }),
+          decision === 'approve' ? (f.dataset.type === 'time' ? 'New deadline set' : 'Added to the task') : 'Request declined');
+        if (!err) { render(); return; }
+        break;
+      }
+      case 'review':
+        if (decision === 'return') err = act(() => store.returnIssue(u.id, id, v('note')), 'Sent back for rework');
+        else if (decision === 'close') err = act(() => store.closeIssue(u.id, id, v('note')), 'Issue closed');
+        else err = 'Choose approve or send back.';
+        if (!err) { render(); window.scrollTo(0, 0); return; }
+        break;
+    }
+    if (err) showError(f, err);
+  });
+
+  // Keep other open tabs of the app in step (same browser)
+  window.addEventListener('storage', (e) => {
+    if (e.key === H.STORAGE_KEY) location.reload();
+  });
+
+  /* ---------- start ---------- */
+  if (me()) home(); else render();
+})();
+
+</script>
+</body>
+</html>

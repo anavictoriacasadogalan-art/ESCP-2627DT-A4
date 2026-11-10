@@ -1,0 +1,12 @@
+{
+  "name": "siteproof",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SiteProof: construction-site issue reporting and follow-up. ESCP Digital Product Design course prototype (fictional data, no APIs).",
+  "scripts": {
+    "start": "npx --yes serve -l 5173 .",
+    "test": "node --test tests/workflow.test.js",
+    "build": "node scripts/build-single-file.mjs"
+  },
+  "license": "UNLICENSED"
+}

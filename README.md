@@ -1,4 +1,4 @@
-# Guillermo
+# SiteProof
 
 **Construction defect communication, from report to verified closure.**
 
@@ -6,7 +6,7 @@
 
 ## 1. Product overview
 
-Guillermo is a proposed mobile-friendly web tool for construction teams to report defects, understand the issue, establish responsibility, follow deadlines, and document resolution in one place.
+SiteProof  is a proposed mobile-friendly web tool for construction teams to report defects, understand the issue, establish responsibility, follow deadlines, and document resolution in one place.
 
 Both managers and workers/contractors can report a defect. The manager reviews reports, selects a responsible person, and sets a deadline. The assignee updates progress and submits the repair. The manager checks the result and closes the record or requests further work.
 
@@ -29,7 +29,7 @@ The responsible person uses the worker/contractor experience; there is no separa
 | Existing `architecture.md` | Separately added technical document, preserved unchanged; see the consistency note below |
 | `README.md` | Overview, project status, demonstration plan, and eventual operating instructions |
 
-These revised documents follow the newly supplied product document rather than the earlier generated product draft. The app name is Guillermo. Any remaining SiteProof references in source material are an older name, not a second product.
+These revised documents follow the newly supplied product document rather than the earlier generated product draft. The app name is SiteProof. Any remaining SiteProof references in source material are an older name, not a second product.
 
 Before final submission, the workshop requires a final `product.md` organized around Strategy, Scope, Structure, and Skeleton, and an `evidence.md` containing research and key insights. The supplied product currently uses a different heading structure, and the supplied evidence PDF has now been transcribed into evidence.md. The product heading structure and the evidence provenance/key-insight synthesis still need review. This publication does not rewrite the product or add research findings to the supplied evidence.
 

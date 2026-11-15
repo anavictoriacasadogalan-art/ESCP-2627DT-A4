@@ -9,7 +9,7 @@
 | **Source of product truth** | `product.md`, supported by `design.md` and `evidence.md` |
 | **Audience** | Project team, course reviewers, and agents building the prototype |
 
-> **In one sentence:** SiteProof is a plain HTML, CSS and JavaScript web app that stores fictional defect records in one browser and demonstrates the hand-off: **report → assign → progress → review → close**.
+> **In one sentence:** SiteProof is a React and TypeScript web app built with Vite that stores fictional defect records in one browser and demonstrates the hand-off: **report → assign → progress → review → close**.
 
 ## 1. Purpose, scope and constraints
 
@@ -24,7 +24,7 @@ The architecture respects these constraints:
 | Fictional data only | Users, issues, locations and images are demo data stored in code. |
 | Runs locally | Node.js is used only to serve the files, run tests and create the optional bundled file. |
 | Same-browser role switching | Worker and manager views read the same `localStorage` issue dataset. Login is simulated. |
-| Small and understandable | Plain JavaScript avoids framework setup that is not needed for this prototype. |
+| Small and understandable | React components and a small local state model keep the prototype easy to inspect. |
 
 The prototype does not provide real authentication, production authorization, cross-device synchronization, notifications, BIM integration, legal acceptance, or emergency reporting.
 
@@ -32,16 +32,17 @@ The prototype does not provide real authentication, production authorization, cr
 
 | Layer | Choice | Purpose |
 |---|---|---|
-| Markup | HTML5 | App shell and accessible structure. |
+| UI | React + ReactDOM | Component rendering and role-based screens. |
+| Language | TypeScript | Typed issue statuses, props and workflow data. |
+| Build tool | Vite | Development server and production build. |
 | Styling | Plain CSS | Responsive layout, design tokens, cards, forms and status cues. |
-| Behaviour | Browser JavaScript | Rendering, forms, role switching and workflow actions. |
 | Persistence | `localStorage` | Keeps fictional issues after refresh in the same browser. |
 | Active user | `sessionStorage` | Keeps the selected demo identity for the current tab. |
-| Local tooling | Node.js 18+ and npm | Runs the local server, tests and bundling script. |
-| Tests | Node’s built-in `node:test` runner | Checks the core status workflow without extra dependencies. |
-| Build | `scripts/build-single-file.mjs` | Produces `dist/siteproof.html` with local CSS and JavaScript embedded. |
+| Local tooling | Node.js 18+ and npm | Installs dependencies and runs the app, tests and Storybook. |
+| Tests | Vitest | Checks the component and workflow code. |
+| Component catalogue | Storybook 8.6 | Documents reusable UI components and their states. |
 
-There is no React, TypeScript, Vite, React Router, Storybook package, or component library in the current implementation. `design.md` documents the intended component catalogue; a runnable Storybook catalogue remains a future implementation task if required by the course.
+The current implementation does not use a backend, authentication service, external API, or web-font CDN. Storybook is configured under `.storybook/` and currently includes button and status-badge stories.
 
 ## 3. Repository structure
 
@@ -50,21 +51,22 @@ The prototype lives in the `siteproof/` folder of the GitHub repository:
 ```text
 siteproof/
 ├── README.md                         # How to run and demonstrate the prototype
-├── index.html                        # Browser entry point
-├── package.json                      # Start, test and build commands
-├── css/
-│   └── styles.css                    # Design tokens and responsive UI styles
-├── js/
-│   ├── store.js                      # Seed data, persistence and status constants
-│   ├── scenes.js                     # Fictional demo-image illustrations
-│   ├── seed.js                       # Fictional demo users
-│   └── app.js                        # Rendering, screens and interactions
-├── tests/
-│   └── workflow.test.js              # Core workflow tests
-├── scripts/
-│   └── build-single-file.mjs         # Creates dist/siteproof.html
-└── dist/
-    └── siteproof.html                # Optional self-contained build output
+├── index.html                        # Vite browser entry point
+├── package.json                      # App, test and Storybook commands
+├── package-lock.json                 # Locked dependency versions
+├── vite.config.ts                    # Vite + React configuration
+├── tsconfig.json                     # TypeScript configuration
+├── src/
+│   ├── main.tsx                      # Mounts the React app
+│   ├── App.tsx                       # Prototype screens and workflow
+│   ├── styles.css                    # Responsive UI styles
+│   └── components/                   # Reusable components
+├── stories/
+│   ├── Button.stories.tsx            # Button catalogue stories
+│   └── StatusBadge.stories.tsx       # All product status stories
+└── .storybook/
+    ├── main.ts                      # Storybook configuration
+    └── preview.ts                    # Shared Storybook styles/settings
 ```
 
 ## 4. Runtime and data flow
@@ -78,7 +80,7 @@ flowchart TB
   B --> F["seed.js + scenes.js"]
 ```
 
-`index.html` creates the app mount point and loads the local scripts in dependency order. `app.js` renders the current screen and calls the store for data changes. `store.js` loads seed issues on first use and saves changes under the `siteproof.demo.v1` key. `sessionStorage` stores the selected demo user under `siteproof.user`.
+`index.html` provides the Vite mount point. `main.tsx` mounts `App.tsx`, which renders the screens and applies the workflow actions. The current prototype keeps demo state in React state; persistence can be added through a dedicated storage module as the workflow expands.
 
 The browser is the only runtime. Opening the app in another browser or device creates a separate dataset.
 
@@ -155,7 +157,8 @@ Before submission, manually check the app on a phone-width viewport and a deskto
 From the `siteproof/` folder:
 
 ```bash
-npm start
+npm install
+npm run dev
 ```
 
 Open `http://localhost:5173` in a browser. The app can also be opened directly through `index.html`, although a local server is recommended.
@@ -166,13 +169,13 @@ Run the tests:
 npm test
 ```
 
-Create the self-contained build:
+Build the app:
 
 ```bash
 npm run build
 ```
 
-The build output is `dist/siteproof.html`.
+The build output is `dist/`. Start the component catalogue with `npm run storybook`, or build it with `npm run build-storybook`.
 
 ## 11. Requirement traceability
 

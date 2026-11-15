@@ -1,17 +1,17 @@
-# Guillermo — Architecture
+# SiteProof — Architecture
 
 | | |
 |---|---|
-| **Product** | Guillermo: construction-site issue communication web app |
+| **Product** | SiteProof: construction-site issue communication web app |
 | **Course** | ESCP Digital Product Design, 2026–2027 |
 | **Repository** | `ESCP-2627DT-A4` |
-| **Prepared for** | Guillermo |
+| **Prepared for** | SiteProof |
 | **Document version** | 1.0, 28 October 2026 |
 | **Status** | Target architecture for the functional prototype. No application code exists yet. |
 | **Source of product truth** | `architecture_handoff.md`, which summarises `product.md` v5.0 (see [§1.3](#13-sources-and-how-they-were-reconciled)) |
 | **Audience** | Project team, course reviewers, and AI coding agents building the prototype |
 
-> **In one sentence:** Guillermo is a single-page web app that runs only in the browser. It keeps one shared issue record per problem in the browser's `localStorage`, and lets you switch between fictional Field and Manager users in the same browser to demonstrate the hand-off: **report → assign → progress → review**.
+> **In one sentence:** SiteProof is a single-page web app that runs only in the browser. It keeps one shared issue record per problem in the browser's `localStorage`, and lets you switch between fictional Field and Manager users in the same browser to demonstrate the hand-off: **report → assign → progress → review**.
 
 ---
 
@@ -41,7 +41,7 @@
 
 ### 1.1 What this document is for
 
-This document explains **how** Guillermo is built. It does not cover **what** Guillermo is (that is `product.md`) or how it looks (that is `design.md`). It is written so that a team member or an AI coding agent can build the prototype from it without having to make further architectural decisions. Every major choice comes with **why we chose it** and **why we did not choose the obvious alternatives**.
+This document explains **how** SiteProof is built. It does not cover **what** SiteProof is (that is `product.md`) or how it looks (that is `design.md`). It is written so that a team member or an AI coding agent can build the prototype from it without having to make further architectural decisions. Every major choice comes with **why we chose it** and **why we did not choose the obvious alternatives**.
 
 ### 1.2 Constraints the architecture must respect
 

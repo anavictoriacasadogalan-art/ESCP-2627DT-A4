@@ -1,11 +1,11 @@
-# Guillermo — Design System
+# SiteProof — Design System
 
 > Status: Documentation draft for group review. No interface or Storybook has been built. Repository publication authorized by the group; implementation remains subject to review.
 > Basis: the supplied `product (3).md`, the supplied evidence PDF, and the group's confirmed workflow.
 
 ## 1. Design purpose
 
-Guillermo helps construction teams keep defect reports, responsibility, deadlines, and repair updates together. The interface should make reporting straightforward on site and make follow-up clear in the office.
+SiteProof helps construction teams keep defect reports, responsibility, deadlines, and repair updates together. The interface should make reporting straightforward on site and make follow-up clear in the office.
 
 There are two experiences:
 
@@ -33,7 +33,7 @@ The proposed appearance is practical and uncluttered: white surfaces, a light gr
 
 | Element | Proposed specification |
 |---|---|
-| App name | Guillermo |
+| App name | SiteProof |
 | Typeface | System sans-serif, available locally |
 | Body text | 16px minimum starting size, with comfortable line spacing |
 | Headings | Clear hierarchy: page title, section title, field label |

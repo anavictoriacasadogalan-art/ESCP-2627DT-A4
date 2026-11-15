@@ -1,4 +1,4 @@
-# Product.md — Construction Defect Management
+# SiteProof — Product Requirements Document
 
 > **Product stage:** Concept / MVP definition  
 > **Version:** 1.0  

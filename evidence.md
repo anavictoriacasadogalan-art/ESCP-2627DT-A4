@@ -1,5 +1,7 @@
 # Evidence – SiteProof
 
+> **Research status:** S1–S4 are unverified research accounts. Confirm before submission whether they are real interviews or simulated research accounts. S5–S6 are simulated interviews and are included only as hypotheses for further validation. Do not present simulated accounts as completed user research.
+
 ## Stakeholders covered
 
 | # | Role | Relation to SiteProof | Hypotheses tested |
@@ -12,6 +14,12 @@
 ## S1 – Site manager
 
 Persona: Site manager, ~45, at a general contractor with ~40 employees. Runs two residential refurbishment projects at once, coordinating 8–12 subcontractors per project.
+
+**Interview date:** [To confirm]  
+**Interviewer:** [To confirm]  
+**Company / project context:** General contractor managing two residential refurbishment projects.  
+**Provenance:** [Confirm whether this is a real interview or a simulated research account.]  
+**Verified quote:** No verbatim quote currently recorded; statements below are notes/paraphrases.
 
 **1. How do you currently keep track of defects?**
 
@@ -45,9 +53,19 @@ Be as fast as sending a WhatsApp photo. Work on site with bad reception. Let him
 
 If subcontractors need to install an app and create accounts. “If they don’t use it, it’s useless to me.”
 
+**Key insight:** The site manager needs a fast shared record that distinguishes a contractor’s claim that work is done from the manager’s own verification.
+
+**Product implication:** SiteProof should make reporting as quick as sending a photo, keep the workflow easy for subcontractors to access, and separate completion submission from manager verification.
+
 ## S2 – Subcontractor foreman
 
 Persona: Foreman of a 6-person drywall and painting company, ~38, works for 4–5 general contractors at the same time.
+
+**Interview date:** [To confirm]  
+**Interviewer:** [To confirm]  
+**Company / project context:** Small drywall and painting company working across several general-contractor projects.  
+**Provenance:** [Confirm whether this is a real interview or a simulated research account.]  
+**Verified quote:** No verbatim quote currently recorded; statements below are notes/paraphrases.
 
 **1. How do you receive defect reports today?**
 
@@ -73,9 +91,19 @@ Only if it’s free for him, needs no account or app download (e.g. a link), and
 
 Proof of completion with a date and photo, which protects him in disputes and helps him get paid faster.
 
+**Key insight:** The foreman needs precise defect context and dated completion evidence so the team can act efficiently and protect itself from unfair responsibility.
+
+**Product implication:** SiteProof should show the exact location, original report, assignee, deadline, completion note, and completion photo in one traceable record.
+
 ## S3 – Project manager / quality inspector
 
 Persona: Project manager at a mid-sized contractor, ~50, oversees 5–6 projects and their site managers.
+
+**Interview date:** [To confirm]  
+**Interviewer:** [To confirm]  
+**Company / project context:** Mid-sized contractor overseeing several construction projects and site managers.  
+**Provenance:** [Confirm whether this is a real interview or a simulated research account.]  
+**Verified quote:** No verbatim quote currently recorded; statements below are notes/paraphrases.
 
 **1. How do you get an overview of defects across projects?**
 
@@ -97,9 +125,19 @@ How many defects are open, how many are overdue, and how many were reopened afte
 
 Important, but it must be clear this is internal. Formal acceptance (Abnahme) with the client is a separate legal process.
 
+**Key insight:** A project manager needs an overview of open, overdue, and repeatedly reopened defects without relying on repeated phone calls.
+
+**Product implication:** SiteProof should provide dashboard counts, status and deadline visibility, history, and clear wording that internal closure is not formal legal acceptance.
+
 ## S4 – Managing director, small general contractor
 
 Persona: Owner and managing director of a residential general contractor with around 25 employees.
+
+**Interview date:** [To confirm]  
+**Interviewer:** [To confirm]  
+**Company / project context:** Small residential general contractor considering whether a focused defect tool would be worth piloting.  
+**Provenance:** [Confirm whether this is a real interview or a simulated research account.]  
+**Verified quote:** No verbatim quote currently recorded; statements below are notes/paraphrases.
 
 **1. What are your biggest operational headaches?**
 
@@ -125,65 +163,90 @@ Probably per active project, or maybe a small monthly fee for the whole company.
 
 Ultimately, I make the decision. But if my site managers don’t see the value in it or don’t want to use it, I’m not going to buy it.
 
+**Key insight:** The buyer’s decision depends on site-manager adoption and whether subcontractors will use the tool, not only on the existence of a defect-tracking feature.
 
-**S5 – Client representative / housing association project lead
-Persona: Client-side project lead, ~42, responsible for several apartment refurbishment projects.**
+**Product implication:** SiteProof should prioritize a low-friction pilot, simple worker access, and measurable improvements in coordination before proposing a broader commercial product.
 
-1. How do you receive information about defects and completion?
+
+## S5 – Client representative / housing association project lead *(simulated interview)*
+
+Persona: Client-side project lead, ~42, responsible for several apartment refurbishment projects.
+
+**Interview date:** Simulated; no real interview date.  
+**Interviewer:** Simulated account; no real interviewer.  
+**Company / project context:** Housing-association-side project lead coordinating apartment refurbishment handovers.  
+**Provenance:** Simulated interview for concept exploration.  
+**Verified quote:** None; responses are invented hypotheses, not a real stakeholder quotation.
+
+**1. How do you receive information about defects and completion?**
 
 Usually through progress meetings, email updates, and reports from the general contractor. The level of detail varies a lot between projects.
 
-2. What concerns you most about defect management?
+**2. What concerns you most about defect management?**
 
 I want confidence that reported issues are actually resolved before the handover. Sometimes a report says an item is complete, but we discover during our inspection that the problem remains.
 
-3. Have delays caused problems for you?
+**3. Have delays caused problems for you?**
 
 Yes. On one project, several unresolved defects delayed tenant move-in by almost three weeks. This created complaints from tenants and additional coordination work for our team.
 
-4. What evidence would you expect when a defect is closed?
+**4. What evidence would you expect when a defect is closed?**
 
 A clear before-and-after photo, the apartment or room location, the date of completion, and confirmation from the person responsible. For important items, I would also want an inspection record.
 
-5. Would you rely on a “verified” status in a digital tool?
+**5. Would you rely on a “verified” status in a digital tool?**
 
 Yes, if it clearly showed who verified the item and when. However, I would not want the tool to be confused with formal client acceptance or contractual handover documentation.
 
-6. What would make a tool useful to you?
+**6. What would make a tool useful to you?**
 
 A dashboard showing open, overdue, and repeatedly reopened defects across projects. I would also value a simple export that could be attached to handover documentation.
 
-7. What would make you reject it?
+**7. What would make you reject it?**
 
 If information is incomplete, if subcontractors do not use it, or if it creates another reporting process without improving accountability.
 
-****S6 – Site supervisor / finishing works coordinator
+**Key insight:** A client-side stakeholder needs confidence that an item marked complete has evidence, a responsible person, and a clear connection to the original location.
+
+**Product implication:** SiteProof should preserve before-and-after evidence, completion dates, authorship, and a clear distinction between internal verification and formal handover acceptance.
+
+## S6 – Site supervisor / finishing works coordinator *(simulated interview)*
+
 Persona: Site supervisor, ~34, works for a regional contractor and coordinates finishing trades on smaller apartment projects.
-****
-1. How do you currently assign and follow up on defects?
+
+**Interview date:** Simulated; no real interview date.  
+**Interviewer:** Simulated account; no real interviewer.  
+**Company / project context:** Regional contractor coordinating finishing trades on smaller apartment projects.  
+**Provenance:** Simulated interview for concept exploration.  
+**Verified quote:** None; responses are invented hypotheses, not a real stakeholder quotation.
+**1. How do you currently assign and follow up on defects?**
 
 I take photos during inspections and send them to the relevant foreman, usually through WhatsApp. I keep a running list in my phone and try to check items again during the next site visit.
 
-2. What causes the most wasted time?
+**2. What causes the most wasted time?**
 
 Unclear locations and incomplete descriptions. If a photo does not show the apartment number or room, I often have to call several people to find out where the issue is.
 
-3. How often do subcontractors confirm that work is complete?
+**3. How often do subcontractors confirm that work is complete?**
 
 Most confirm by message. Some send a photo, but usually only when I specifically ask for one.
 
-4. What happens when an item is marked complete but is still wrong?
+**4. What happens when an item is marked complete but is still wrong?**
 
 I reopen it and contact the trade again. This is frustrating because there is rarely a clear record of what was originally requested or who confirmed the repair.
 
-5. Would subcontractors use a link-based tool?
+**5. Would subcontractors use a link-based tool?**
 
 Probably. They would be more likely to use a link than download an app, especially if they can open the task directly and upload one photo without creating an account.
 
-6. What would you want the tool to do?
+**6. What would you want the tool to do?**
 
 Create a defect in less than a minute, automatically record the location and date, notify the responsible trade, and let me mark the repair as verified separately from the trade’s completion confirmation.
 
-7. What would make you continue using it after a pilot?
+**7. What would make you continue using it after a pilot?**
 
 It would need to reduce phone calls and make handover preparation easier. If it became another list that I had to maintain manually, I would stop using it.
+
+**Key insight:** The site supervisor loses time when defect locations are unclear and when completion messages are not connected to the original request.
+
+**Product implication:** SiteProof should make location prominent, connect every update to the original defect, and keep the manager as the only person who changes deadlines or verifies closure.

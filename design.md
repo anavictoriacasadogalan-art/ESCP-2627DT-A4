@@ -1,6 +1,6 @@
 # SiteProof — Design System
 
-> Status: Documentation draft for group review. No interface or Storybook has been built. Repository publication authorized by the group; implementation remains subject to review.
+> Status: Documentation draft for group review. The React interface and Storybook component catalogue are implemented in the `siteproof/` prototype. Repository publication authorized by the group; final usability and accessibility validation remains to be completed.
 > Basis: the supplied `product (3).md`, the supplied evidence PDF, and the group's confirmed workflow.
 
 ## 1. Design purpose
